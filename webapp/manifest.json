@@ -1,0 +1,83 @@
+{
+    "sap.app": {
+        "id": "yauheni.sapryn",
+        "type": "application",
+        "title": "UI 5 App",
+        "description": "",
+        "applicationVersion": {
+            "version": "1.0.0"
+        }
+    },
+    "sap.ui": {
+        "deviceTypes": {
+            "desktop": true,
+            "tablet": true,
+            "phone": true
+        },
+        "supportedThemes": [
+            "sap_belize"
+        ]
+    },
+    "sap.ui5": {
+        "rootView": "yauheni.sapryn.view.App",
+        "routing": {
+            "config": {
+                "routerClass": "sap.m.routing.Router",
+                "viewType": "XML",
+                "viewPath": "yauheni.sapryn.view",
+                "controlId": "RootApp",
+                "controlAggregation": "pages",
+                "bypassed": {
+                    "target": [
+                        "notFound"
+                    ]
+                },
+                "async": true
+            },
+            "routes": [
+                {
+                    "pattern": "",
+                    "name": "StoreOverview",
+                    "target": "storesOverview"
+                },
+                {
+                    "pattern": "StoreDetails",
+                    "name": "StoreDetails",
+                    "target": "storeDetails"
+                },
+                {
+                    "pattern": "ProductDetails",
+                    "name": "ProductDetails",
+                    "target": "productDetails"
+                }
+            ],
+            "targets": {
+                "storesOverview": {
+                    "viewName": "StoresOverview",
+                    "viewId": "storesOverview",
+                    "viewLevel": 1
+                },
+                "storeDetails": {
+                    "viewName": "StoreDetails",
+                    "viewId": "storeDetails",
+                    "viewLevel": 2
+                },
+                "productDetails": {
+                    "viewName": "ProductDetails",
+                    "viewId": "productDetails",
+                    "viewLevel": 3
+                },
+                "notFound": {
+                    "viewName": "NotFound",
+                    "viewId": "notFound"
+                }
+            }
+        },
+        "dependencies": {
+            "minUI5Version": "1.54.0",
+            "libs": {
+                "sap.m": {}
+            }
+        }
+    }
+}

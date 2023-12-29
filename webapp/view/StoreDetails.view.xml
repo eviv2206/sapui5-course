@@ -1,0 +1,12 @@
+<mvc:View
+        xmlns="sap.m"
+        xmlns:mvc="sap.ui.core.mvc"
+        controllerName="yauheni.sapryn.controller.StoreDetails">
+
+    <Page title="Store Details">
+        <content>
+            <Button text="Store overview" press="onStoreOverviewPress"/>
+            <Button text="Product details" press="onProductDetailsPress"/>
+        </content>
+    </Page>
+</mvc:View>

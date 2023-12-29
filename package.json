@@ -1,0 +1,19 @@
+{
+  "name": "lx-course-dec23-sapryn-yauheni-ui5",
+  "version": "1.0.0",
+  "description": "",
+  "main": "Component.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "ui5 serve --open index.html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://leverx-edu-sapui5-course-2023.leverx-group.com/yauheni.sapryn/lx-course-dec23-sapryn-yauheni-ui5.git"
+  },
+  "private": true,
+  "dependencies": {
+    "@sap/ux-ui5-tooling": "^1.12.0",
+    "@ui5/cli": "^3.8.0"
+  }
+}
