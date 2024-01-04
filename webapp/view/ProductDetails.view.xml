@@ -1,11 +1,99 @@
 <mvc:View
         xmlns="sap.m"
+        xmlns:f="sap.f"
+        xmlns:layout="sap.ui.layout"
         xmlns:mvc="sap.ui.core.mvc"
         controllerName="yauheni.sapryn.controller.ProductDetails">
 
-    <Page title="Product details">
-        <content>
-            <Button text="Store overview" press="onStoreOverviewPress"/>
-        </content>
-    </Page>
+    <f:DynamicPage>
+        <f:title>
+            <f:DynamicPageTitle>
+                <f:breadcrumbs>
+                    <Breadcrumbs>
+                        <Link text="Store list" target="StoreList" press="onLinkWithoutParamPress"/>
+                        <Link text="Store details" press="onLinkStoreDetailsPress"/>
+                        <Link text="Product details" target="ProductDetails" press="onLinkProductDetailsPress"/>
+                    </Breadcrumbs>
+                </f:breadcrumbs>
+                <f:heading>
+                    <Title text="Product Details ({jdata>Product/Name})"/>
+                </f:heading>
+            </f:DynamicPageTitle>
+        </f:title>
+        <f:header>
+            <f:DynamicPageHeader pinnable="true">
+                <layout:HorizontalLayout>
+                    <layout:VerticalLayout class="sapUiSmallMarginEnd">
+                        <FlexBox alignItems="Center">
+                            <Label text="Price:" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"/>
+                            <Text text="{jdata>Product/Price} USD"/>
+                        </FlexBox>
+                        <FlexBox alignItems="Center">
+                            <Label text="Rating:" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"/>
+                            <Text text="{jdata>Product/Rating}"/>
+                        </FlexBox>
+                    </layout:VerticalLayout>
+                    <layout:VerticalLayout class="sapUiSmallMarginEnd">
+                        <FlexBox alignItems="Center">
+                            <Label text="Made in:" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"/>
+                            <Text text="{jdata>Product/MadeIn}"/>
+                        </FlexBox>
+                    </layout:VerticalLayout>
+                    <layout:VerticalLayout>
+                        <FlexBox alignItems="Center">
+                            <Label text="Production company:" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"/>
+                            <Text text="{jdata>Product/ProductionCompanyName}"/>
+                        </FlexBox>
+                        <FlexBox alignItems="Center">
+                            <Label text="Status:" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"/>
+                            <Text text="{jdata>Product/Status}"/>
+                        </FlexBox>
+                    </layout:VerticalLayout>
+                </layout:HorizontalLayout>
+                <layout:VerticalLayout>
+                    <FlexBox alignItems="Center">
+                        <Label text="Specs:" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"/>
+                        <Text text="{jdata>Product/Specs}"/>
+                    </FlexBox>
+                    <FlexBox alignItems="Center">
+                        <Label text="Supplier info:" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"/>
+                        <Text text="{jdata>Product/SupplierInfo}"/>
+                    </FlexBox>
+                </layout:VerticalLayout>
+            </f:DynamicPageHeader>
+        </f:header>
+        <f:content>
+            <VBox>
+                <VBox>
+                    <FlexBox alignItems="Center">
+                        <Label text="Author name:"/>
+                        <Input placeholder="Enter name"/>
+
+                        <Label text="Rating:"/>
+                        <RatingIndicator editable="true" maxValue="5" value="0"/>
+                    </FlexBox>
+                    <FeedInput
+                            placeholder="Post something here"
+                            showIcon="true"
+                    />
+                </VBox>
+                <List
+                        showSeparators="Inner"
+                        items="{jdata>/Comments}">
+                    <FeedListItem
+                            sender="{jdata>Author}"
+                            info="{jdata>Type}"
+                            timestamp="Rating: {jdata>Rating} Posted: {
+                                path: 'jdata>Posted',
+                                formatter: '.formatDate',
+                                type: 'sap.ui.model.odata.type.String'
+                            }"
+                            text="{jdata>Message}"
+                            iconDensityAware="false"
+                            convertLinksToAnchorTags="All"
+                    />
+                </List>
+            </VBox>
+        </f:content>
+    </f:DynamicPage>
 </mvc:View>

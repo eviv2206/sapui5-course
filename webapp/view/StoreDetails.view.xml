@@ -1,12 +1,175 @@
 <mvc:View
         xmlns="sap.m"
+        xmlns:f="sap.f"
+        xmlns:layout="sap.ui.layout"
         xmlns:mvc="sap.ui.core.mvc"
         controllerName="yauheni.sapryn.controller.StoreDetails">
 
-    <Page title="Store Details">
-        <content>
-            <Button text="Store overview" press="onStoreOverviewPress"/>
-            <Button text="Product details" press="onProductDetailsPress"/>
-        </content>
-    </Page>
+    <f:DynamicPage class="sapUiNoContentPadding" fitContent="true">
+        <f:title>
+            <f:DynamicPageTitle>
+                <f:breadcrumbs>
+                    <Breadcrumbs>
+                        <Link text="Store list" target="StoreList" press="onLinkWithoutParamPress"/>
+                        <Link text="Store details" target="StoreDetails" press="onLinkStoreDetailsPress"/>
+                    </Breadcrumbs>
+                </f:breadcrumbs>
+                <f:heading>
+                    <Title text="Store details"/>
+                </f:heading>
+            </f:DynamicPageTitle>
+        </f:title>
+        <f:header>
+            <f:DynamicPageHeader pinnable="true">
+                <layout:HorizontalLayout>
+                    <layout:VerticalLayout class="sapUiSmallMarginEnd">
+                        <FlexBox alignItems="Center">
+                            <Label text="Email:" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"/>
+                            <Text text="{odata>Email}"/>
+                        </FlexBox>
+                        <FlexBox alignItems="Center">
+                            <Label text="Phone Number:" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"/>
+                            <Text text="{odata>PhoneNumber}"/>
+                        </FlexBox>
+                        <FlexBox alignItems="Center">
+                            <Label text="Address:" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"/>
+                            <Text text="{odata>Address}"/>
+                        </FlexBox>
+                    </layout:VerticalLayout>
+
+                    <layout:VerticalLayout>
+                        <FlexBox alignItems="Center">
+                            <Label text="Established Date:" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"/>
+                            <Text text="{
+                        path: 'odata>Established',
+                        formatter: '.formatDate',
+                        type: 'sap.ui.model.odata.type.String'
+                        }"/>
+                        </FlexBox>
+                        <FlexBox alignItems="Center">
+                            <Label text="Floor Area:" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"/>
+                            <Text text="{odata>FloorArea}"/>
+                        </FlexBox>
+                    </layout:VerticalLayout>
+
+                </layout:HorizontalLayout>
+            </f:DynamicPageHeader>
+        </f:header>
+        <f:content>
+            <VBox>
+                <IconTabBar>
+                    <items>
+                        <IconTabFilter
+                                showAll="true"
+                                text="ALL"
+                                key="All"/>
+                        <IconTabSeparator/>
+                        <IconTabFilter
+                                icon="sap-icon://accept"
+                                iconColor="Positive"
+                                count="{/ProductCollectionStats/Counts/Weight/Ok}"
+                                text="Ok"
+                                key="OK"/>
+                        <IconTabFilter
+                                icon="sap-icon://alert"
+                                iconColor="Critical"
+                                count="{/ProductCollectionStats/Counts/Weight/Heavy}"
+                                text="Storage"
+                                key="STORAGE"/>
+                        <IconTabFilter
+                                icon="sap-icon://high-priority"
+                                iconColor="Negative"
+                                count="{/ProductCollectionStats/Counts/Weight/Overweight}"
+                                text="Out of stock"
+                                key="OUT_OF_STOCK"/>
+                    </items>
+                    <content>
+                        <Table
+                                items="{
+                    path: 'odata>rel_Products',
+                    sorter : {
+                        path : 'id'
+                        }
+                    }"
+                                sticky="ColumnHeaders"
+                                class="sapUiContentPadding"
+                        >
+                            <headerToolbar>
+                                <OverflowToolbar style="Clear">
+                                    <Title id="title" text="Products"/>
+                                    <ToolbarSpacer/>
+                                    <SearchField
+                                            placeholder="Enter value to search"
+                                            width="30%"/>
+                                </OverflowToolbar>
+                            </headerToolbar>
+                            <columns>
+                                <Column width="15%">
+                                    <FlexBox alignItems="Center">
+                                        <Button icon="sap-icon://sort"/>
+                                        <Text text="Name"/>
+                                    </FlexBox>
+                                </Column>
+                                <Column width="8%">
+                                    <FlexBox alignItems="Center">
+                                        <Button icon="sap-icon://sort"/>
+                                        <Text text="Price"/>
+                                    </FlexBox>
+                                </Column>
+                                <Column width="12%">
+                                    <FlexBox alignItems="Center">
+                                        <Button icon="sap-icon://sort"/>
+                                        <Text text="Specs"/>
+                                    </FlexBox>
+                                </Column>
+                                <Column width="12%">
+                                    <FlexBox alignItems="Center">
+                                        <Button icon="sap-icon://sort"/>
+                                        <Text text="Supplier Info"/>
+                                    </FlexBox>
+                                </Column>
+                                <Column width="12%">
+                                    <FlexBox alignItems="Center">
+                                        <Button icon="sap-icon://sort"/>
+                                        <Text text="Country of origin"/>
+                                    </FlexBox>
+                                </Column>
+                                <Column width="12%">
+                                    <FlexBox alignItems="Center">
+                                        <Button icon="sap-icon://sort"/>
+                                        <Text text="Prod. company"/>
+                                    </FlexBox>
+                                </Column>
+                                <Column width="12%">
+                                    <FlexBox alignItems="Center">
+                                        <Button icon="sap-icon://sort"/>
+                                        <Text text="Rating"/>
+                                    </FlexBox>
+                                </Column>
+                                <Column>
+                                </Column>
+                            </columns>
+                            <items>
+                                <ColumnListItem type="Navigation" press="onTableItemPress">
+                                    <cells>
+                                        <ObjectIdentifier title="{odata>Name}" text="{odata>id}"/>
+                                        <ObjectNumber number="{odata>Price}" unit="USD"/>
+                                        <Text wrapping="false" text="{odata>Specs}"/>
+                                        <Text wrapping="false" text="{odata>SupplierInfo}"/>
+                                        <Text wrapping="false" text="{odata>MadeIn}"/>
+                                        <Text wrapping="false" text="{odata>ProductionCompanyName}"/>
+                                        <RatingIndicator maxValue="5" editable="false" value="{odata>Rating}"/>
+                                        <FlexBox justifyContent="End">
+                                            <Button icon="sap-icon://edit"/>
+                                            <Button icon="sap-icon://message-error"/>
+                                        </FlexBox>
+                                    </cells>
+                                </ColumnListItem>
+                            </items>
+                        </Table>
+                    </content>
+                </IconTabBar>
+            </VBox>
+        </f:content>
+    </f:DynamicPage>
 </mvc:View>

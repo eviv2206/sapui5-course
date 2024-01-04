@@ -1,0 +1,44 @@
+<mvc:View
+        xmlns="sap.m"
+        xmlns:f="sap.f"
+        xmlns:mvc="sap.ui.core.mvc"
+        controllerName="yauheni.sapryn.controller.StoresList">
+
+    <f:DynamicPage class="sapUiNoContentPadding">
+        <f:title>
+            <f:DynamicPageTitle>
+                <f:breadcrumbs>
+                    <Breadcrumbs>
+                        <Link text="Store list" target="StoreList" press="onLinkWithoutParamPress"/>
+                    </Breadcrumbs>
+                </f:breadcrumbs>
+                <f:heading>
+                    <Title text="Store list"/>
+                </f:heading>
+            </f:DynamicPageTitle>
+        </f:title>
+        <f:header>
+            <f:DynamicPageHeader pinnable="true">
+                <SearchField placeholder="Search..." showRefreshButton="true" />
+            </f:DynamicPageHeader>
+        </f:header>
+        <f:content>
+            <List items="{odata>/Stores}">
+                <CustomListItem type="Active" press="onListItemPress">
+                    <VBox>
+                        <FlexBox justifyContent="SpaceBetween" class="sapUiSmallMarginBeginEnd sapUiTinyMarginBottom sapUiSmallMarginTop">
+                            <Title text="{odata>Name}"/>
+                            <FlexBox direction="Column" alignItems="End">
+                                <Text text="{odata>FloorArea}"/>
+                                <Text text="sq.m"/>
+                            </FlexBox>
+                        </FlexBox>
+                        <FlexBox justifyContent="Start" class="sapUiSmallMarginBeginEnd sapUiTinyMarginBottom sapUiSmallMarginBottom">
+                            <Text text="{odata>Address}"/>
+                        </FlexBox>
+                    </VBox>
+                </CustomListItem>
+            </List>
+        </f:content>
+    </f:DynamicPage>
+</mvc:View>

@@ -1,6 +1,8 @@
 sap.ui.define([
-    "sap/ui/core/UIComponent"
-], function (UIComponent) {
+    "sap/ui/core/UIComponent",
+    "sap/ui/model/odata/v2/ODataModel",
+    "sap/ui/model/json/JSONModel"
+], function (UIComponent, ODataModel, JSONModel) {
     "use strict";
 
     return UIComponent.extend("yauheni.sapryn.Component", {
@@ -11,6 +13,16 @@ sap.ui.define([
         init : function () {
             // call the init function of the parent
             UIComponent.prototype.init.apply(this, arguments);
+            const oODataModel = new ODataModel("http://localhost:3000/odata", {useBatch: false, defaultBindingMode: "TwoWay"});
+            this.setModel(oODataModel, "odata");
+
+            const oModel = new JSONModel();
+            oModel.setData({
+                StoreID: "",
+                ProductId: "",
+            });
+
+            this.setModel(oModel, "selectedIds");
 
             this.getRouter().initialize();
         }
