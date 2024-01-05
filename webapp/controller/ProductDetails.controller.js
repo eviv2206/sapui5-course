@@ -1,16 +1,18 @@
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/ui/model/json/JSONModel",
-    "sap/ui/core/format/DateFormat"
-], function (Controller, JSONModel, DateFormat) {
+    "sap/ui/core/format/DateFormat",
+    "sap/ui/model/Filter",
+    "sap/ui/model/FilterOperator"
+], function (Controller, JSONModel, DateFormat, Filter, FilterOperator) {
     "use strict";
 
     return Controller.extend("yauheni.sapryn.controller.ProductDetails", {
 
         onInit: function () {
-            var oRouter = this.getOwnerComponent().getRouter();
-            var oCurrentRoute = oRouter.getHashChanger().getHash();
-            var oParameters = oRouter.getRouteInfoByHash(oCurrentRoute);
+            const oRouter = this.getOwnerComponent().getRouter();
+            const oCurrentRoute = oRouter.getHashChanger().getHash();
+            const oParameters = oRouter.getRouteInfoByHash(oCurrentRoute);
 
             this.getOwnerComponent().getModel("selectedIds").setProperty("/StoreID", oParameters.arguments.StoreID);
             this.getOwnerComponent().getModel("selectedIds").setProperty("/ProductID", oParameters.arguments.ProductID);
@@ -25,39 +27,46 @@ sap.ui.define([
             const oODataModel = this.getView().getModel("odata");
 
             oODataModel.metadataLoaded().then(() => {
-                const JModel = new JSONModel();
-                this.getView().setModel(JModel, "jdata");
-                const sPath = "/Products(" + sProductID + ")";
-
-                oODataModel.read(sPath, {
-                    success: (data) => {
-                        JModel.setProperty("/Product", data);
-                    }
-                });
-
-                oODataModel.read("/ProductComments", {
-                    urlParameters: {
-                        "$filter": "ProductId eq " + sProductID
-                    },
-
-                    success: (data) => {
-                        JModel.setProperty("/Comments", data.results);
-                    }
-                });
+                const sProductPath = oODataModel.createKey("/Products", {id: sProductID});
 
                 this.getView().bindObject({
-                    path: "/",
-                    model: "jdata"
+                    path: sProductPath,
+                    model: "odata"
                 });
-            });
+
+                const oFilter = new Filter("ProductId", FilterOperator.EQ, sProductID);
+
+                const sCommentsPath = "/ProductComments";
+                this.byId("CommentsList").bindObject({
+                    path: sCommentsPath,
+                    model: "odata",
+                });
+
+                this.byId("CommentsList").getBinding("items").filter(oFilter);
+
+            })
         },
 
-        formatDate: function (date) {
-            const oDateFormat = DateFormat.getDateInstance({
-                pattern: "HH. MMM yyyy"
-            });
+        formatStatus: function (sStatus) {
+            switch (sStatus) {
+                case "OK":
+                    return "Ok";
+                case "STORAGE":
+                    return "Storage";
+                case "OUT_OF_STOCK":
+                    return "Out of stock";
+            }
+        },
 
-            return oDateFormat.format(date);
+        formatState: function (sStatus) {
+            switch (sStatus) {
+                case "OK":
+                    return "Success";
+                case "STORAGE":
+                    return "Indication03";
+                case "OUT_OF_STOCK":
+                    return "Indication01";
+            }
         },
 
         onLinkWithoutParamPress: function (oEvent) {

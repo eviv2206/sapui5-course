@@ -13,7 +13,7 @@ sap.ui.define([
         init : function () {
             // call the init function of the parent
             UIComponent.prototype.init.apply(this, arguments);
-            const oODataModel = new ODataModel("http://localhost:3000/odata", {useBatch: false, defaultBindingMode: "TwoWay"});
+            const oODataModel = new ODataModel("http://localhost:3000/odata", {useBatch: false, defaultBindingMode: "TwoWay", defaultCountMode: "Inline"});
             this.setModel(oODataModel, "odata");
 
             const oModel = new JSONModel();

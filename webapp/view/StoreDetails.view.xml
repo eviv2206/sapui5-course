@@ -42,8 +42,10 @@
                             <Label text="Established Date:" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"/>
                             <Text text="{
                         path: 'odata>Established',
-                        formatter: '.formatDate',
-                        type: 'sap.ui.model.odata.type.String'
+                        type: 'sap.ui.model.type.Date',
+                        formatOptions: {
+                            pattern: 'dd MMM yyyy'
+                        }
                         }"/>
                         </FlexBox>
                         <FlexBox alignItems="Center">
@@ -62,35 +64,40 @@
                         <IconTabFilter
                                 showAll="true"
                                 text="ALL"
-                                key="All"/>
+                                key="All"
+                                id="FilterAll"
+                        />
                         <IconTabSeparator/>
                         <IconTabFilter
                                 icon="sap-icon://accept"
                                 iconColor="Positive"
-                                count="{/ProductCollectionStats/Counts/Weight/Ok}"
                                 text="Ok"
-                                key="OK"/>
+                                key="OK"
+                                id="FilterOk"
+                        />
                         <IconTabFilter
                                 icon="sap-icon://alert"
                                 iconColor="Critical"
-                                count="{/ProductCollectionStats/Counts/Weight/Heavy}"
                                 text="Storage"
-                                key="STORAGE"/>
+                                key="STORAGE"
+                                id="FilterStorage"
+                        />
                         <IconTabFilter
                                 icon="sap-icon://high-priority"
                                 iconColor="Negative"
-                                count="{/ProductCollectionStats/Counts/Weight/Overweight}"
                                 text="Out of stock"
-                                key="OUT_OF_STOCK"/>
+                                key="OUT_OF_STOCK"
+                                id="FilterOutOfStock"
+                        />
                     </items>
                     <content>
                         <Table
                                 items="{
-                    path: 'odata>rel_Products',
-                    sorter : {
-                        path : 'id'
-                        }
-                    }"
+                                    path: 'odata>rel_Products',
+                                    sorter : {
+                                        path : 'id'
+                                    }
+                                }"
                                 sticky="ColumnHeaders"
                                 class="sapUiContentPadding"
                         >
@@ -106,43 +113,43 @@
                             <columns>
                                 <Column width="15%">
                                     <FlexBox alignItems="Center">
-                                        <Button icon="sap-icon://sort"/>
+                                        <Button icon="sap-icon://sort" type="Transparent"/>
                                         <Text text="Name"/>
                                     </FlexBox>
                                 </Column>
                                 <Column width="8%">
                                     <FlexBox alignItems="Center">
-                                        <Button icon="sap-icon://sort"/>
+                                        <Button icon="sap-icon://sort" type="Transparent"/>
                                         <Text text="Price"/>
                                     </FlexBox>
                                 </Column>
                                 <Column width="12%">
                                     <FlexBox alignItems="Center">
-                                        <Button icon="sap-icon://sort"/>
+                                        <Button icon="sap-icon://sort" type="Transparent"/>
                                         <Text text="Specs"/>
                                     </FlexBox>
                                 </Column>
                                 <Column width="12%">
                                     <FlexBox alignItems="Center">
-                                        <Button icon="sap-icon://sort"/>
+                                        <Button icon="sap-icon://sort" type="Transparent"/>
                                         <Text text="Supplier Info"/>
                                     </FlexBox>
                                 </Column>
                                 <Column width="12%">
                                     <FlexBox alignItems="Center">
-                                        <Button icon="sap-icon://sort"/>
+                                        <Button icon="sap-icon://sort" type="Transparent"/>
                                         <Text text="Country of origin"/>
                                     </FlexBox>
                                 </Column>
                                 <Column width="12%">
                                     <FlexBox alignItems="Center">
-                                        <Button icon="sap-icon://sort"/>
+                                        <Button icon="sap-icon://sort" type="Transparent"/>
                                         <Text text="Prod. company"/>
                                     </FlexBox>
                                 </Column>
                                 <Column width="12%">
                                     <FlexBox alignItems="Center">
-                                        <Button icon="sap-icon://sort"/>
+                                        <Button icon="sap-icon://sort" type="Transparent"/>
                                         <Text text="Rating"/>
                                     </FlexBox>
                                 </Column>
@@ -160,8 +167,8 @@
                                         <Text wrapping="false" text="{odata>ProductionCompanyName}"/>
                                         <RatingIndicator maxValue="5" editable="false" value="{odata>Rating}"/>
                                         <FlexBox justifyContent="End">
-                                            <Button icon="sap-icon://edit"/>
-                                            <Button icon="sap-icon://message-error"/>
+                                            <Button icon="sap-icon://edit" type="Transparent"/>
+                                            <Button icon="sap-icon://message-error" type="Transparent"/>
                                         </FlexBox>
                                     </cells>
                                 </ColumnListItem>

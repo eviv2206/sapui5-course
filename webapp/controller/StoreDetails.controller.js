@@ -1,15 +1,16 @@
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
-    "sap/ui/core/format/DateFormat"
-], function (Controller, DateFormat) {
+    "sap/ui/model/Filter",
+    "sap/ui/model/FilterOperator"
+], function (Controller, Filter, FilterOperator) {
     "use strict";
 
     return Controller.extend("yauheni.sapryn.controller.StoreDetails", {
 
         onInit: function () {
-            var oRouter = this.getOwnerComponent().getRouter();
-            var oCurrentRoute = oRouter.getHashChanger().getHash();
-            var oParameters = oRouter.getRouteInfoByHash(oCurrentRoute);
+            const oRouter = this.getOwnerComponent().getRouter();
+            const oCurrentRoute = oRouter.getHashChanger().getHash();
+            const oParameters = oRouter.getRouteInfoByHash(oCurrentRoute);
 
             this.getOwnerComponent().getModel("selectedIds").setProperty("/StoreID", oParameters.arguments.StoreID);
 
@@ -21,20 +22,71 @@ sap.ui.define([
             const sStoreID = mRouteArguments.StoreID;
             const oODataModel = this.getView().getModel("odata");
             oODataModel.metadataLoaded().then(() => {
-                const sKey = oODataModel.createKey("/Stores", {id: sStoreID});
+
+                const sPath = oODataModel.createKey("/Stores", {id: sStoreID});
                 this.getView().bindObject({
-                    path: sKey,
+                    path: sPath,
                     model: "odata"
                 });
+
+                this.getProductsFilterCount(sStoreID, "", oODataModel, (length) => {
+                    this.byId("FilterAll").setCount(length);
+                });
+
+                this.getProductsFilterCount(sStoreID, "OK", oODataModel, (length) => {
+                    this.byId("FilterOk").setCount(length);
+                })
+
+                this.getProductsFilterCount(sStoreID, "STORAGE", oODataModel, (length) => {
+                    this.byId("FilterStorage").setCount(length);
+                });
+
+                this.getProductsFilterCount(sStoreID, "OUT_OF_STOCK", oODataModel, (length) => {
+                    this.byId("FilterOutOfStock").setCount(length);
+                })
+
             });
         },
 
-        formatDate: function (vValue) {
-            const oDateFormat = DateFormat.getDateInstance({
-                pattern: "HH MMM yyyy"
-            });
+        getProductsFilterCount: function (storeId, filterType, odataModel, onSuccess) {
+            let oFilter;
 
-            return oDateFormat.format(vValue);
+            if (filterType === "") {
+                oFilter = new Filter({
+                    filters: [
+                        new Filter({
+                            path: "StoreId",
+                            operator: FilterOperator.EQ,
+                            value1: storeId
+                        })
+                    ],
+                });
+
+            } else {
+                oFilter = new Filter({
+                    filters: [
+                        new Filter({
+                            path: "StoreId",
+                            operator: FilterOperator.EQ,
+                            value1: storeId
+                        }),
+
+                        new Filter({
+                            path: "Status",
+                            operator: FilterOperator.EQ,
+                            value1: filterType,
+                        }),
+                    ],
+                    and: true
+                });
+            }
+
+            odataModel.read("/Products", {
+                filters: [oFilter],
+                success: function (data) {
+                    onSuccess(data.results.length);
+                },
+            });
         },
 
         onLinkWithoutParamPress: function (oEvent) {

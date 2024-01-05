@@ -16,7 +16,7 @@
                     </Breadcrumbs>
                 </f:breadcrumbs>
                 <f:heading>
-                    <Title text="Product Details ({jdata>Product/Name})"/>
+                    <Title text="Product Details ({odata>Name})"/>
                 </f:heading>
             </f:DynamicPageTitle>
         </f:title>
@@ -26,38 +26,45 @@
                     <layout:VerticalLayout class="sapUiSmallMarginEnd">
                         <FlexBox alignItems="Center">
                             <Label text="Price:" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"/>
-                            <Text text="{jdata>Product/Price} USD"/>
+                            <Text text="{odata>Price} USD"/>
                         </FlexBox>
                         <FlexBox alignItems="Center">
                             <Label text="Rating:" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"/>
-                            <Text text="{jdata>Product/Rating}"/>
+                            <Text text="{odata>Rating}"/>
                         </FlexBox>
                     </layout:VerticalLayout>
                     <layout:VerticalLayout class="sapUiSmallMarginEnd">
                         <FlexBox alignItems="Center">
                             <Label text="Made in:" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"/>
-                            <Text text="{jdata>Product/MadeIn}"/>
+                            <Text text="{odata>MadeIn}"/>
                         </FlexBox>
                     </layout:VerticalLayout>
                     <layout:VerticalLayout>
                         <FlexBox alignItems="Center">
                             <Label text="Production company:" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"/>
-                            <Text text="{jdata>Product/ProductionCompanyName}"/>
+                            <Text text="{odata>ProductionCompanyName}"/>
                         </FlexBox>
                         <FlexBox alignItems="Center">
                             <Label text="Status:" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"/>
-                            <Text text="{jdata>Product/Status}"/>
+                            <ObjectStatus
+                                    text="{path: 'odata>Status', formatter: '.formatStatus'}"
+                                    state="{path: 'odata>Status', formatter: '.formatState'}"
+                                    inverted="true"
+                                    active="true"
+                                    id="ProductStatus"
+                            />
+                            <Text />
                         </FlexBox>
                     </layout:VerticalLayout>
                 </layout:HorizontalLayout>
                 <layout:VerticalLayout>
                     <FlexBox alignItems="Center">
                         <Label text="Specs:" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"/>
-                        <Text text="{jdata>Product/Specs}"/>
+                        <Text text="{odata>Specs}"/>
                     </FlexBox>
                     <FlexBox alignItems="Center">
                         <Label text="Supplier info:" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"/>
-                        <Text text="{jdata>Product/SupplierInfo}"/>
+                        <Text text="{odata>SupplierInfo}"/>
                     </FlexBox>
                 </layout:VerticalLayout>
             </f:DynamicPageHeader>
@@ -65,12 +72,15 @@
         <f:content>
             <VBox>
                 <VBox>
-                    <FlexBox alignItems="Center">
-                        <Label text="Author name:"/>
-                        <Input placeholder="Enter name"/>
-
-                        <Label text="Rating:"/>
-                        <RatingIndicator editable="true" maxValue="5" value="0"/>
+                    <FlexBox>
+                        <FlexBox alignItems="Center" class="sapUiTinyMarginEnd">
+                            <Label text="Author name:" class="sapUiTinyMarginEnd"/>
+                            <Input placeholder="Enter name"/>
+                        </FlexBox>
+                        <FlexBox alignItems="Center">
+                            <Label text="Rating:" class="sapUiTinyMarginEnd"/>
+                            <RatingIndicator editable="true" maxValue="5" value="0"/>
+                        </FlexBox>
                     </FlexBox>
                     <FeedInput
                             placeholder="Post something here"
@@ -78,17 +88,21 @@
                     />
                 </VBox>
                 <List
+                        id="CommentsList"
                         showSeparators="Inner"
-                        items="{jdata>/Comments}">
+                        items="{odata>/ProductComments}"
+                >
                     <FeedListItem
-                            sender="{jdata>Author}"
-                            info="{jdata>Type}"
-                            timestamp="Rating: {jdata>Rating} Posted: {
-                                path: 'jdata>Posted',
-                                formatter: '.formatDate',
-                                type: 'sap.ui.model.odata.type.String'
+                            sender="{odata>Author}"
+                            info="{odata>Type}"
+                            timestamp="Rating: {odata>Rating} Posted: {
+                                path: 'odata>Posted',
+                                type: 'sap.ui.model.type.Date',
+                                formatOptions: {
+                                    pattern: 'dd MMM yyyy'
+                                }
                             }"
-                            text="{jdata>Message}"
+                            text="{odata>Message}"
                             iconDensityAware="false"
                             convertLinksToAnchorTags="All"
                     />
