@@ -4,7 +4,10 @@
         xmlns:mvc="sap.ui.core.mvc"
         controllerName="yauheni.sapryn.controller.StoresList">
 
-    <f:DynamicPage class="sapUiNoContentPadding">
+    <f:DynamicPage
+            class="sapUiNoContentPadding"
+            showFooter="true"
+    >
         <f:title>
             <f:DynamicPageTitle>
                 <f:breadcrumbs>
@@ -19,26 +22,35 @@
         </f:title>
         <f:header>
             <f:DynamicPageHeader pinnable="true">
-                <SearchField placeholder="Search..." showRefreshButton="true" />
+                <SearchField placeholder="Search..." showRefreshButton="true"/>
             </f:DynamicPageHeader>
         </f:header>
         <f:content>
             <List items="{odata>/Stores}">
                 <CustomListItem type="Active" press="onListItemPress">
                     <VBox>
-                        <FlexBox justifyContent="SpaceBetween" class="sapUiSmallMarginBeginEnd sapUiTinyMarginBottom sapUiSmallMarginTop">
+                        <FlexBox justifyContent="SpaceBetween"
+                                 class="sapUiSmallMarginBeginEnd sapUiTinyMarginBottom sapUiSmallMarginTop">
                             <Title text="{odata>Name}"/>
                             <FlexBox direction="Column" alignItems="End">
                                 <Text text="{odata>FloorArea}"/>
                                 <Text text="sq.m"/>
                             </FlexBox>
                         </FlexBox>
-                        <FlexBox justifyContent="Start" class="sapUiSmallMarginBeginEnd sapUiTinyMarginBottom sapUiSmallMarginBottom">
+                        <FlexBox justifyContent="Start"
+                                 class="sapUiSmallMarginBeginEnd sapUiTinyMarginBottom sapUiSmallMarginBottom">
                             <Text text="{odata>Address}"/>
                         </FlexBox>
                     </VBox>
                 </CustomListItem>
             </List>
         </f:content>
+        <f:footer>
+            <OverflowToolbar>
+                <FlexBox justifyContent="End" width="100%">
+                    <Button text="Create" type="Ghost" icon="sap-icon://add" class="sapUiTinyMarginEnd"/>
+                </FlexBox>
+            </OverflowToolbar>
+        </f:footer>
     </f:DynamicPage>
 </mvc:View>

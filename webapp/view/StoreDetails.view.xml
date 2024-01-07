@@ -5,7 +5,7 @@
         xmlns:mvc="sap.ui.core.mvc"
         controllerName="yauheni.sapryn.controller.StoreDetails">
 
-    <f:DynamicPage class="sapUiNoContentPadding" fitContent="true">
+    <f:DynamicPage class="sapUiNoContentPadding" fitContent="true" showFooter="true">
         <f:title>
             <f:DynamicPageTitle>
                 <f:breadcrumbs>
@@ -178,5 +178,13 @@
                 </IconTabBar>
             </VBox>
         </f:content>
+        <f:footer>
+            <OverflowToolbar>
+                <FlexBox justifyContent="End" width="100%">
+                    <Button type="Ghost" text="Create" icon="sap-icon://add" class="sapUiTinyMarginEnd"/>
+                    <Button type="Reject" text="Delete" icon="sap-icon://delete" class="sapUiTinyMarginEnd" />
+                </FlexBox>
+            </OverflowToolbar>
+        </f:footer>
     </f:DynamicPage>
 </mvc:View>
