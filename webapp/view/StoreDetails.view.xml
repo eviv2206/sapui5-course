@@ -3,6 +3,7 @@
         xmlns:f="sap.f"
         xmlns:layout="sap.ui.layout"
         xmlns:mvc="sap.ui.core.mvc"
+        xmlns:app="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1"
         controllerName="yauheni.sapryn.controller.StoreDetails">
 
     <f:DynamicPage class="sapUiNoContentPadding" fitContent="true">
@@ -100,6 +101,7 @@
                                 }"
                                 sticky="ColumnHeaders"
                                 class="sapUiContentPadding"
+                                id="ProductsTable"
                         >
                             <headerToolbar>
                                 <OverflowToolbar style="Clear">
@@ -107,49 +109,87 @@
                                     <ToolbarSpacer/>
                                     <SearchField
                                             placeholder="Enter value to search"
-                                            width="30%"/>
+                                            width="30%"
+                                            search="onProductSearch"
+                                            id="ProductSearchField"
+                                    />
                                 </OverflowToolbar>
                             </headerToolbar>
                             <columns>
                                 <Column width="15%">
                                     <FlexBox alignItems="Center">
-                                        <Button icon="sap-icon://sort" type="Transparent"/>
+                                        <Button
+                                                icon="sap-icon://sort"
+                                                type="Transparent"
+                                                press="onSortButtonPress"
+                                                app:sortBy="Name"
+                                        />
                                         <Text text="Name"/>
                                     </FlexBox>
                                 </Column>
                                 <Column width="8%">
                                     <FlexBox alignItems="Center">
-                                        <Button icon="sap-icon://sort" type="Transparent"/>
+                                        <Button
+                                                icon="sap-icon://sort"
+                                                type="Transparent"
+                                                press="onSortButtonPress"
+                                                app:sortBy="Price"
+                                        />
                                         <Text text="Price"/>
                                     </FlexBox>
                                 </Column>
                                 <Column width="12%">
                                     <FlexBox alignItems="Center">
-                                        <Button icon="sap-icon://sort" type="Transparent"/>
+                                        <Button
+                                                icon="sap-icon://sort"
+                                                type="Transparent"
+                                                press="onSortButtonPress"
+                                                app:sortBy="Specs"
+                                        />
                                         <Text text="Specs"/>
                                     </FlexBox>
                                 </Column>
                                 <Column width="12%">
                                     <FlexBox alignItems="Center">
-                                        <Button icon="sap-icon://sort" type="Transparent"/>
+                                        <Button
+                                                icon="sap-icon://sort"
+                                                type="Transparent"
+                                                press="onSortButtonPress"
+                                                app:sortBy="SupplierInfo"
+                                        />
                                         <Text text="Supplier Info"/>
                                     </FlexBox>
                                 </Column>
                                 <Column width="12%">
                                     <FlexBox alignItems="Center">
-                                        <Button icon="sap-icon://sort" type="Transparent"/>
+                                        <Button
+                                                icon="sap-icon://sort"
+                                                type="Transparent"
+                                                press="onSortButtonPress"
+                                                app:sortBy="MadeIn"
+                                        />
                                         <Text text="Country of origin"/>
                                     </FlexBox>
                                 </Column>
                                 <Column width="12%">
                                     <FlexBox alignItems="Center">
-                                        <Button icon="sap-icon://sort" type="Transparent"/>
+                                        <Button
+                                                icon="sap-icon://sort"
+                                                type="Transparent"
+                                                press="onSortButtonPress"
+                                                app:sortBy="ProductionCompanyName"
+                                        />
                                         <Text text="Prod. company"/>
                                     </FlexBox>
                                 </Column>
                                 <Column width="12%">
                                     <FlexBox alignItems="Center">
-                                        <Button icon="sap-icon://sort" type="Transparent"/>
+                                        <Button
+                                                icon="sap-icon://sort"
+                                                type="Transparent"
+                                                press="onSortButtonPress"
+                                                app:sortBy="Rating"
+                                        />
                                         <Text text="Rating"/>
                                     </FlexBox>
                                 </Column>

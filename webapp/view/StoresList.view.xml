@@ -19,11 +19,11 @@
         </f:title>
         <f:header>
             <f:DynamicPageHeader pinnable="true">
-                <SearchField placeholder="Search..." showRefreshButton="true" />
+                <SearchField placeholder="Search..." showRefreshButton="true" search="onSearch" />
             </f:DynamicPageHeader>
         </f:header>
         <f:content>
-            <List items="{odata>/Stores}">
+            <List items="{odata>/Stores}" id="StoresList">
                 <CustomListItem type="Active" press="onListItemPress">
                     <VBox>
                         <FlexBox justifyContent="SpaceBetween" class="sapUiSmallMarginBeginEnd sapUiTinyMarginBottom sapUiSmallMarginTop">
