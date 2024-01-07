@@ -5,8 +5,8 @@ sap.ui.define([
 
     return Controller.extend("yauheni.sapryn.controller.StoresOverview", {
         onStoreDetailsPress: function () {
-            const router = sap.ui.core.UIComponent.getRouterFor(this);
-            router.navTo("StoreDetails");
+            const oRouter = sap.ui.core.UIComponent.getRouterFor(this);
+            oRouter.navTo("StoreDetails");
         }
     });
 });
