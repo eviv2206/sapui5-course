@@ -90,15 +90,15 @@ sap.ui.define([
         },
 
         onLinkWithoutParamPress: function (oEvent) {
-            const router = this.getOwnerComponent().getRouter();
-            router.navTo(oEvent.getSource().getProperty("target"));
+            const oRouter = this.getOwnerComponent().getRouter();
+            oRouter.navTo(oEvent.getSource().getProperty("target"));
         },
 
         onLinkStoreDetailsPress: function (oEvent) {
-            const router = this.getOwnerComponent().getRouter();
-            const storeId = this.getView().getModel("selectedIds").getProperty("/StoreID");
-            router.navTo(oEvent.getSource().getProperty("target"), {
-                StoreID: storeId
+            const oRouter = this.getOwnerComponent().getRouter();
+            const sStoreId = this.getView().getModel("selectedIds").getProperty("/StoreID");
+            oRouter.navTo(oEvent.getSource().getProperty("target"), {
+                StoreID: sStoreId
             });
         },
 

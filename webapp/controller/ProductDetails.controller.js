@@ -70,23 +70,23 @@ sap.ui.define([
         },
 
         onLinkWithoutParamPress: function (oEvent) {
-            const router = this.getOwnerComponent().getRouter();
-            router.navTo(oEvent.getSource().getProperty("target"));
+            const oRouter = this.getOwnerComponent().getRouter();
+            oRouter.navTo(oEvent.getSource().getProperty("target"));
         },
 
         onLinkStoreDetailsPress: function (oEvent) {
-            const router = this.getOwnerComponent().getRouter();
-            const storeId = this.getView().getModel("selectedIds").getProperty("/StoreID");
-            router.navTo("StoreDetails", {
-                StoreID: storeId
+            const oRouter = this.getOwnerComponent().getRouter();
+            const sStoreId = this.getView().getModel("selectedIds").getProperty("/StoreID");
+            oRouter.navTo("StoreDetails", {
+                StoreID: sStoreId
             });
         },
 
         onLinkProductDetailsPress: function (oEvent) {
-            const router = this.getOwnerComponent().getRouter();
-            const productId = this.getView().getModel("selectedIds").getProperty("/ProductID");
-            router.navTo("ProductDetails", {
-                ProductID: productId
+            const oRouter = this.getOwnerComponent().getRouter();
+            const sProductId = this.getView().getModel("selectedIds").getProperty("/ProductID");
+            oRouter.navTo("ProductDetails", {
+                ProductID: sProductId
             });
         },
 

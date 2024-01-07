@@ -20,8 +20,8 @@ sap.ui.define([
         },
 
         onLinkWithoutParamPress: function (oEvent) {
-            const router = this.getOwnerComponent().getRouter();
-            router.navTo(oEvent.getSource().getProperty("target"));
+            const oRouter = this.getOwnerComponent().getRouter();
+            oRouter.navTo(oEvent.getSource().getProperty("target"));
         },
     });
 });
