@@ -13,7 +13,7 @@ sap.ui.define([
         },
 
         performStoreSearch: function (sSearchValue) {
-            const list = this.byId("StoresList");
+            const oList = this.byId("StoresList");
             const oODataModel = this.getView().getModel("odata");
             oODataModel.metadataLoaded().then(() => {
                 let oFilter = new Filter({
@@ -47,7 +47,7 @@ sap.ui.define([
                     })
                 }
 
-                list.getBinding("items").filter(oFilter);
+                oList.getBinding("items").filter(oFilter);
             })
         },
 
@@ -66,8 +66,8 @@ sap.ui.define([
         },
 
         onLinkWithoutParamPress: function (oEvent) {
-            const router = this.getOwnerComponent().getRouter();
-            router.navTo(oEvent.getSource().getProperty("target"));
+            const oRouter = this.getOwnerComponent().getRouter();
+            oRouter.navTo(oEvent.getSource().getProperty("target"));
         },
     });
 });

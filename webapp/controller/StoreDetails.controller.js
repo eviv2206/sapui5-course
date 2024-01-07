@@ -112,15 +112,15 @@ sap.ui.define([
         },
 
         onLinkWithoutParamPress: function (oEvent) {
-            const router = this.getOwnerComponent().getRouter();
-            router.navTo(oEvent.getSource().getProperty("target"));
+            const oRouter = this.getOwnerComponent().getRouter();
+            oRouter.navTo(oEvent.getSource().getProperty("target"));
         },
 
         onLinkStoreDetailsPress: function (oEvent) {
-            const router = this.getOwnerComponent().getRouter();
-            const storeId = this.getView().getModel("selectedIds").getProperty("/StoreID");
-            router.navTo(oEvent.getSource().getProperty("target"), {
-                StoreID: storeId
+            const oRouter = this.getOwnerComponent().getRouter();
+            const sStoreId = this.getView().getModel("selectedIds").getProperty("/StoreID");
+            oRouter.navTo(oEvent.getSource().getProperty("target"), {
+                StoreID: sStoreId
             });
         },
 
@@ -147,11 +147,11 @@ sap.ui.define([
         },
 
         performProductSearch: function (sSearchValue) {
-            const table = this.byId("ProductsTable");
+            const oTable = this.byId("ProductsTable");
             const oODataModel = this.getView().getModel("odata");
             oODataModel.metadataLoaded().then(() => {
-                let oFilter = this.createFilters(sSearchValue);
-                table.getBinding("items").filter(oFilter);
+                const oFilter = this.createFilters(sSearchValue);
+                oTable.getBinding("items").filter(oFilter);
             });
         },
 
@@ -218,8 +218,6 @@ sap.ui.define([
             const oProductsTable = this.byId("ProductsTable");
             const oItemsBinding = oProductsTable.getBinding("items");
 
-
-
             switch (sSortType) {
                 case SORT_NONE: {
                     sSortType = SORT_ASC;
@@ -250,6 +248,34 @@ sap.ui.define([
             }
         },
 
+        onFilterSelect: function (oEvent) {
+            const oBinding = this.byId("ProductsTable").getBinding("items");
+            const sKey = oEvent.getParameter("key");
+            const aFilters = [];
+
+            if (sKey === "OK") {
+                aFilters.push(new Filter({
+                    path: "Status",
+                    operator: FilterOperator.EQ,
+                    value1: "OK"
+                }));
+            } else if (sKey === "STORAGE") {
+                aFilters.push(new Filter({
+                    path: "Status",
+                    operator: FilterOperator.EQ,
+                    value1: "STORAGE"
+                }));
+            } else if (sKey === "OUT_OF_STOCK") {
+                aFilters.push(new Filter({
+                    path: "Status",
+                    operator: FilterOperator.EQ,
+                    value1: "OUT_OF_STOCK"
+                }));
+            }
+
+            oBinding.filter(aFilters);
+        },
+
         _clearAllSorting: function (oEvent) {
             const oTable = this.byId("ProductsTable");
             oTable.getBinding("items").sort(null);
@@ -262,22 +288,29 @@ sap.ui.define([
                 }
             });
 
-            const data = this.oSortModel.getData();
+            const oData = this.oSortModel.getData();
 
-            for (const key in data) {
+            for (const key in oData) {
                 this.oSortModel.setProperty(`/${key}`, SORT_NONE);
             }
         },
 
         _clearSearch: function () {
-            const searchField = this.byId("ProductSearchField");
-            searchField.setValue("");
+            const oSearchField = this.byId("ProductSearchField");
+            oSearchField.setValue("");
         },
 
         _clearFilters: function () {
-            const table = this.byId("ProductsTable");
-            table.getBinding("items").filter(null);
+            const oTable = this.byId("ProductsTable");
+            const oFilterBar = this.byId("FilterBar");
+            const oFilterItemAll = this.byId("FilterAll");
+
+            oTable.getBinding("items").filter(null);
+
+            oFilterBar.setSelectedKey(oFilterItemAll);
         },
+
+
 
         _compareFunction: function(value1, value2) {
 

@@ -60,7 +60,10 @@
         </f:header>
         <f:content>
             <VBox>
-                <IconTabBar>
+                <IconTabBar
+                        id="FilterBar"
+                        select="onFilterSelect"
+                >
                     <items>
                         <IconTabFilter
                                 showAll="true"
