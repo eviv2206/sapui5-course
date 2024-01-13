@@ -33,7 +33,7 @@
                                  class="sapUiSmallMarginBeginEnd sapUiTinyMarginBottom sapUiSmallMarginTop">
                             <Title text="{odata>Name}"/>
                             <FlexBox direction="Column" alignItems="End">
-                                <Text text="{odata>FloorArea}"/>
+                                <Title titleStyle="H3" text="{odata>FloorArea}"/>
                                 <Text text="sq.m"/>
                             </FlexBox>
                         </FlexBox>
