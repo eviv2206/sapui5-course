@@ -6,7 +6,7 @@
         xmlns:app="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1"
         controllerName="yauheni.sapryn.controller.StoreDetails">
 
-    <f:DynamicPage class="sapUiNoContentPadding" fitContent="true">
+    <f:DynamicPage class="sapUiNoContentPadding" fitContent="true" showFooter="true">
         <f:title>
             <f:DynamicPageTitle>
                 <f:breadcrumbs>
@@ -68,7 +68,7 @@
                         <IconTabFilter
                                 showAll="true"
                                 text="ALL"
-                                key="All"
+                                key="FilterAll"
                                 id="FilterAll"
                         />
                         <IconTabSeparator/>
@@ -76,21 +76,21 @@
                                 icon="sap-icon://accept"
                                 iconColor="Positive"
                                 text="Ok"
-                                key="OK"
+                                key="FilterOk"
                                 id="FilterOk"
                         />
                         <IconTabFilter
                                 icon="sap-icon://alert"
                                 iconColor="Critical"
                                 text="Storage"
-                                key="STORAGE"
+                                key="FilterStorage"
                                 id="FilterStorage"
                         />
                         <IconTabFilter
                                 icon="sap-icon://high-priority"
                                 iconColor="Negative"
                                 text="Out of stock"
-                                key="OUT_OF_STOCK"
+                                key="FilterOutOfStock"
                                 id="FilterOutOfStock"
                         />
                     </items>
@@ -211,7 +211,7 @@
                                         <RatingIndicator maxValue="5" editable="false" value="{odata>Rating}"/>
                                         <FlexBox justifyContent="End">
                                             <Button icon="sap-icon://edit" type="Transparent"/>
-                                            <Button icon="sap-icon://message-error" type="Transparent"/>
+                                            <Button icon="sap-icon://message-error" type="Transparent" press="onRemoveButtonPress"/>
                                         </FlexBox>
                                     </cells>
                                 </ColumnListItem>
@@ -221,5 +221,13 @@
                 </IconTabBar>
             </VBox>
         </f:content>
+        <f:footer>
+            <OverflowToolbar>
+                <FlexBox justifyContent="End" width="100%">
+                    <Button type="Ghost" text="Create" icon="sap-icon://add" class="sapUiTinyMarginEnd" press="onCreateProductButtonPress"/>
+                    <Button type="Reject" text="Delete" icon="sap-icon://delete" class="sapUiTinyMarginEnd" press="onDeleteStoreButtonPress" />
+                </FlexBox>
+            </OverflowToolbar>
+        </f:footer>
     </f:DynamicPage>
 </mvc:View>

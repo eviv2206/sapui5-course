@@ -1,0 +1,63 @@
+<core:FragmentDefinition
+        xmlns="sap.m"
+        xmlns:f="sap.ui.layout.form"
+        xmlns:core="sap.ui.core"
+>
+    <Dialog>
+        <f:SimpleForm
+                maxContainerCols="1"
+                layout="ResponsiveGridLayout"
+                labelSpanL="12"
+                labelSpanM="12"
+                emptySpanL="0"
+                emptySpanM="0"
+                columnsL="1"
+                columnsM="1">
+            <f:content>
+                <Label text="Name" required="true"/>
+                <Input value="{Name}"/>
+
+                <Label text="Price" required="true"/>
+                <FlexBox alignItems="Center">
+                    <Input value="{Price}" fieldWidth="100vw">
+                        <layoutData>
+                            <FlexItemData growFactor="1" />
+                        </layoutData>
+                    </Input>
+                    <Text text="USD"/>
+                </FlexBox>
+
+                <Label text="Specs" required="true"/>
+                <TextArea value="{Specs}"/>
+
+                <Label text="Rating" required="true"/>
+                <Input value="{Rating}"/>
+
+                <Label text="Supplier info" required="true"/>
+                <TextArea value="{SupplierInfo}"/>
+
+                <Label text="Made in" required="true"/>
+                <Input value="{MadeIn}"/>
+
+                <Label text="Production company name" required="true"/>
+                <Input value="{ProductionCompanyName}"/>
+
+                <Label text="Status" required="true"/>
+                <Select
+                    selectedKey="{Status}"
+                >
+                    <items>
+                        <core:ListItem text="Ok"/>
+                        <core:ListItem text="Storage"/>
+                        <core:ListItem text="Out of stock"/>
+                    </items>
+                </Select>
+            </f:content>
+        </f:SimpleForm>
+
+        <buttons>
+            <Button text="Create" />
+            <Button text="Close" />
+        </buttons>
+    </Dialog>
+</core:FragmentDefinition>

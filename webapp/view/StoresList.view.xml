@@ -4,7 +4,7 @@
         xmlns:mvc="sap.ui.core.mvc"
         controllerName="yauheni.sapryn.controller.StoresList">
 
-    <f:DynamicPage class="sapUiNoContentPadding">
+    <f:DynamicPage class="sapUiNoContentPadding" showFooter="true">
         <f:title>
             <f:DynamicPageTitle>
                 <f:breadcrumbs>
@@ -40,5 +40,12 @@
                 </CustomListItem>
             </List>
         </f:content>
+        <f:footer>
+            <OverflowToolbar>
+                <FlexBox justifyContent="End" width="100%">
+                    <Button type="Ghost" text="Create" icon="sap-icon://add" class="sapUiTinyMarginEnd"/>
+                </FlexBox>
+            </OverflowToolbar>
+        </f:footer>
     </f:DynamicPage>
 </mvc:View>

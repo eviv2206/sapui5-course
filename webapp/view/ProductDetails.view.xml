@@ -1,6 +1,7 @@
 <mvc:View
         xmlns="sap.m"
         xmlns:f="sap.f"
+        xmlns:form="sap.ui.layout.form"
         xmlns:layout="sap.ui.layout"
         xmlns:mvc="sap.ui.core.mvc"
         controllerName="yauheni.sapryn.controller.ProductDetails">
@@ -53,7 +54,7 @@
                                     active="true"
                                     id="ProductStatus"
                             />
-                            <Text />
+                            <Text/>
                         </FlexBox>
                     </layout:VerticalLayout>
                 </layout:HorizontalLayout>
@@ -71,22 +72,25 @@
         </f:header>
         <f:content>
             <VBox>
-                <VBox>
-                    <FlexBox>
-                        <FlexBox alignItems="Center" class="sapUiTinyMarginEnd">
-                            <Label text="Author name:" class="sapUiTinyMarginEnd"/>
-                            <Input placeholder="Enter name"/>
+                <form:SimpleForm
+                        layout="ResponsiveGridLayout"
+                        >
+                    <form:content>
+                        <FlexBox direction="Column">
+                            <FlexBox alignItems="Center">
+                                <Label text="Author name:" class="sapUiSmallMarginEnd"/>
+                                <Input placeholder="Enter name" value="{viewModel>/authorName}" required="true"/>
+                                <Label text="Rating:" class="sapUiSmallMarginEnd"/>
+                                <RatingIndicator editable="true" maxValue="5" value="{viewModel>/ratingValue}"
+                                                 required="true"/>
+                            </FlexBox>
+                            <FeedInput
+                                    placeholder="Post something here"
+                                    showIcon="true"
+                            />
                         </FlexBox>
-                        <FlexBox alignItems="Center">
-                            <Label text="Rating:" class="sapUiTinyMarginEnd"/>
-                            <RatingIndicator editable="true" maxValue="5" value="0"/>
-                        </FlexBox>
-                    </FlexBox>
-                    <FeedInput
-                            placeholder="Post something here"
-                            showIcon="true"
-                    />
-                </VBox>
+                    </form:content>
+                </form:SimpleForm>
                 <List
                         id="CommentsList"
                         showSeparators="Inner"

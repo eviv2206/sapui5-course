@@ -4,7 +4,9 @@ sap.ui.define([
     "sap/ui/model/Filter",
     "sap/ui/model/FilterOperator",
     "sap/ui/model/Sorter",
-], function (Controller, JSONModel, Filter, FilterOperator, Sorter) {
+    "sap/m/MessageBox",
+    "sap/m/MessageToast"
+], function (Controller, JSONModel, Filter, FilterOperator, Sorter, MessageBox, MessageToast) {
     "use strict";
 
     const SORT_NONE = "";
@@ -16,13 +18,7 @@ sap.ui.define([
         onInit: function () {
 
             this._oView = this.getView();
-            this._oView.addEventDelegate({
-                onBeforeHide: function(oEvent) {
-                    this._clearSearch();
-                    this._clearAllSorting();
-                    this._clearFilters();
-                },
-            }, this)
+            this._oView.addEventDelegate({onBeforeHide: this.onBeforeHide}, this)
 
             const oRouter = this.getOwnerComponent().getRouter();
             const oCurrentRoute = oRouter.getHashChanger().getHash();
@@ -30,7 +26,7 @@ sap.ui.define([
 
             this.getOwnerComponent().getModel("selectedIds").setProperty("/StoreID", oParameters.arguments.StoreID);
 
-            const oSortModel = new JSONModel({
+            this.oSortModel = new JSONModel({
                 Name: SORT_NONE,
                 Price: SORT_NONE,
                 Specs: SORT_NONE,
@@ -39,10 +35,6 @@ sap.ui.define([
                 ProductionCompanyName: SORT_NONE,
                 Rating: SORT_NONE,
             });
-
-            this.oSortModel = oSortModel;
-
-            this.getView().setModel(oSortModel, "products");
 
             oRouter.getRoute("StoreDetails").attachPatternMatched(this.onPatternMatched, this);
         },
@@ -59,56 +51,29 @@ sap.ui.define([
                     model: "odata"
                 });
 
-                this.getProductsFilterCount(sStoreID, "", oODataModel, (length) => {
+                this._getProductsFilterCount(sStoreID, "", oODataModel, (length) => {
                     this.byId("FilterAll").setCount(length);
                 });
 
-                this.getProductsFilterCount(sStoreID, "OK", oODataModel, (length) => {
+                this._getProductsFilterCount(sStoreID, "OK", oODataModel, (length) => {
                     this.byId("FilterOk").setCount(length);
                 })
 
-                this.getProductsFilterCount(sStoreID, "STORAGE", oODataModel, (length) => {
+                this._getProductsFilterCount(sStoreID, "STORAGE", oODataModel, (length) => {
                     this.byId("FilterStorage").setCount(length);
                 });
 
-                this.getProductsFilterCount(sStoreID, "OUT_OF_STOCK", oODataModel, (length) => {
+                this._getProductsFilterCount(sStoreID, "OUT_OF_STOCK", oODataModel, (length) => {
                     this.byId("FilterOutOfStock").setCount(length);
                 })
 
             });
         },
 
-        getProductsFilterCount: function (storeId, filterType, odataModel, onSuccess) {
-            let oFilter = new Filter({
-                filters: [
-                    new Filter({
-                        path: "StoreId",
-                        operator: FilterOperator.EQ,
-                        value1: storeId
-                    })
-                ],
-            });
-
-            if (filterType !== "") {
-                oFilter = new Filter({
-                    filters: [
-                        oFilter,
-                        new Filter({
-                            path: "Status",
-                            operator: FilterOperator.EQ,
-                            value1: filterType,
-                        }),
-                    ],
-                    and: true
-                });
-            }
-
-            odataModel.read("/Products", {
-                filters: [oFilter],
-                success: function (data) {
-                    onSuccess(data.results.length);
-                },
-            });
+        onBeforeHide: function(oEvent) {
+            this._clearSearch();
+            this._clearAllSorting();
+            this._clearFilters();
         },
 
         onLinkWithoutParamPress: function (oEvent) {
@@ -143,19 +108,166 @@ sap.ui.define([
 
         onProductSearch: function (oEvent) {
             const sSearchValue = oEvent.getParameter("query");
-            this.performProductSearch(sSearchValue);
+            this._performProductSearch(sSearchValue);
         },
 
-        performProductSearch: function (sSearchValue) {
-            const oTable = this.byId("ProductsTable");
-            const oODataModel = this.getView().getModel("odata");
-            oODataModel.metadataLoaded().then(() => {
-                const oFilter = this.createFilters(sSearchValue);
-                oTable.getBinding("items").filter(oFilter);
+        onSortButtonPress: function (oEvent) {
+            const oSortButton = oEvent.getSource();
+            const sSortBy = oSortButton.data("sortBy");
+            let sSortType = this.oSortModel.getProperty(`/${sSortBy}`);
+
+            this._clearAllSorting();
+
+            const oProductsTable = this.byId("ProductsTable");
+            const oItemsBinding = oProductsTable.getBinding("items");
+
+            switch (sSortType) {
+                case SORT_NONE: {
+                    sSortType = SORT_ASC;
+                    oSortButton.setIcon("sap-icon://sort-ascending");
+                    break;
+                }
+
+                case SORT_ASC: {
+                    sSortType = SORT_DESC;
+                    oSortButton.setIcon("sap-icon://sort-descending");
+                    break;
+                }
+
+                case SORT_DESC: {
+                    sSortType = SORT_NONE;
+                    oSortButton.setIcon("sap-icon://sort");
+                    break;
+                }
+            }
+
+            this.oSortModel.setProperty(`/${sSortBy}`, sSortType);
+
+            if (sSortType === SORT_ASC || sSortType === SORT_DESC) {
+                const bSortDesc = sSortType === SORT_DESC;
+                const oSorter = new Sorter(sSortBy, bSortDesc);
+                oSorter.fnCompare = this._compareFunction;
+                oItemsBinding.sort(oSorter);
+            }
+        },
+
+        onFilterSelect: function (oEvent) {
+            const oBinding = this.byId("ProductsTable").getBinding("items");
+            const sKey = oEvent.getParameter("key");
+            const aFilters = [];
+
+            if (sKey === "FilterOk") {
+                aFilters.push(new Filter({
+                    path: "Status",
+                    operator: FilterOperator.EQ,
+                    value1: "OK"
+                }));
+            } else if (sKey === "FilterStorage") {
+                aFilters.push(new Filter({
+                    path: "Status",
+                    operator: FilterOperator.EQ,
+                    value1: "STORAGE"
+                }));
+            } else if (sKey === "FilterOutOfStock") {
+                aFilters.push(new Filter({
+                    path: "Status",
+                    operator: FilterOperator.EQ,
+                    value1: "OUT_OF_STOCK"
+                }));
+            }
+
+            oBinding.filter(aFilters);
+        },
+
+        onDeleteProductButtonPress: function (oEvent) {
+            this._showMessageBox(
+                "Confirmation",
+                "Are you sure you want to delete this product?",
+                () => this._handleDeleteProduct(oEvent),
+            );
+        },
+
+        onCreateProductButtonPress: function (oEvent) {
+            const oView = this.getView();
+            const oODataModel = oView.getModel("odata");
+            if (!this.oDialog) {
+                this.oDialog = sap.ui.xmlfragment(oView.getId(), "yauheni.sapryn.view.fragments.ProductDialog", this);
+                oView.addDependent(this.oDialog);
+            }
+
+            const oEntryCtx = oODataModel.createEntry("/Products");
+
+            this.oDialog.setBindingContext(oEntryCtx);
+
+            this.oDialog.setModel(oODataModel);
+
+            this.oDialog.open();
+
+        },
+
+        onDeleteStoreButtonPress: function (oEvent) {
+            this._showMessageBox(
+                "Confirmation",
+                "Are you sure you want to delete this store?",
+                () => this._handleDeleteStore(oEvent, this),
+            );
+        },
+
+        _showMessageBox: function (title, message, onConfirm) {
+            MessageBox.confirm(
+                message,
+                {
+                    title: title,
+                    onClose: (oAction) => {
+                        if (oAction === MessageBox.Action.OK) {
+                            onConfirm();
+                        }
+                    }
+                }
+            );
+        },
+
+        _handleDeleteStore: function (oEvent, those) {
+            const oRouter = those.getOwnerComponent().getRouter();
+
+            const oCtx = oEvent.getSource().getBindingContext("odata");
+
+            const oODataModel = oCtx.getModel("odata");
+
+            const sPath = oODataModel.createKey("/Stores", oCtx.getObject());
+
+            oODataModel.remove(sPath, {
+                success: function () {
+                    MessageToast.show("Store deleted successfully.");
+                },
+                error: function () {
+                    MessageToast.show("Error while deleting Store.");
+                }
+            });
+
+            oRouter.navTo("StoreList");
+        },
+
+        _handleDeleteProduct: function (oEvent) {
+            const oCtx = oEvent.getSource().getBindingContext("odata");
+
+            const oODataModel = oCtx.getModel("odata");
+
+            const sPath = oODataModel.createKey("/Products", oCtx.getObject());
+
+            oODataModel.remove(sPath, {
+                success: function () {
+                    MessageToast.show("Product deleted successfully.");
+                },
+                error: function () {
+                    MessageToast.show("Error while deleting product.");
+                }
             });
         },
 
-        createFilters: function (sSearchValue) {
+
+
+        _createFilters: function (sSearchValue) {
             let oFilter = new Filter({
                 filters: [
                     new Filter({
@@ -208,72 +320,46 @@ sap.ui.define([
             return oFilter;
         },
 
-        onSortButtonPress: function (oEvent) {
-            const oSortButton = oEvent.getSource();
-            const sSortBy = oSortButton.data("sortBy");
-            let sSortType = this.oSortModel.getProperty(`/${sSortBy}`);
-
-            this._clearAllSorting();
-
-            const oProductsTable = this.byId("ProductsTable");
-            const oItemsBinding = oProductsTable.getBinding("items");
-
-            switch (sSortType) {
-                case SORT_NONE: {
-                    sSortType = SORT_ASC;
-                    oSortButton.setIcon("sap-icon://sort-ascending");
-                    break;
-                }
-
-                case SORT_ASC: {
-                    sSortType = SORT_DESC;
-                    oSortButton.setIcon("sap-icon://sort-descending");
-                    break;
-                }
-
-                case SORT_DESC: {
-                    sSortType = SORT_NONE;
-                    oSortButton.setIcon("sap-icon://sort");
-                    break;
-                }
-            }
-
-            this.oSortModel.setProperty(`/${sSortBy}`, sSortType);
-
-            if (sSortType === SORT_ASC || sSortType === SORT_DESC) {
-                const bSortDesc = sSortType === SORT_DESC;
-                const oSorter = new Sorter(sSortBy, bSortDesc);
-                oSorter.fnCompare = this._compareFunction;
-                oItemsBinding.sort(oSorter);
-            }
+        _performProductSearch: function (sSearchValue) {
+            const oTable = this.byId("ProductsTable");
+            const oODataModel = this.getView().getModel("odata");
+            oODataModel.metadataLoaded().then(() => {
+                const oFilter = this._createFilters(sSearchValue);
+                oTable.getBinding("items").filter(oFilter);
+            });
         },
 
-        onFilterSelect: function (oEvent) {
-            const oBinding = this.byId("ProductsTable").getBinding("items");
-            const sKey = oEvent.getParameter("key");
-            const aFilters = [];
+        _getProductsFilterCount: function (storeId, filterType, odataModel, onSuccess) {
+            let oFilter = new Filter({
+                filters: [
+                    new Filter({
+                        path: "StoreId",
+                        operator: FilterOperator.EQ,
+                        value1: storeId
+                    })
+                ],
+            });
 
-            if (sKey === "OK") {
-                aFilters.push(new Filter({
-                    path: "Status",
-                    operator: FilterOperator.EQ,
-                    value1: "OK"
-                }));
-            } else if (sKey === "STORAGE") {
-                aFilters.push(new Filter({
-                    path: "Status",
-                    operator: FilterOperator.EQ,
-                    value1: "STORAGE"
-                }));
-            } else if (sKey === "OUT_OF_STOCK") {
-                aFilters.push(new Filter({
-                    path: "Status",
-                    operator: FilterOperator.EQ,
-                    value1: "OUT_OF_STOCK"
-                }));
+            if (filterType !== "") {
+                oFilter = new Filter({
+                    filters: [
+                        oFilter,
+                        new Filter({
+                            path: "Status",
+                            operator: FilterOperator.EQ,
+                            value1: filterType,
+                        }),
+                    ],
+                    and: true
+                });
             }
 
-            oBinding.filter(aFilters);
+            odataModel.read("/Products/$count", {
+                filters: [oFilter],
+                success: function (data) {
+                    onSuccess(data);
+                },
+            });
         },
 
         _clearAllSorting: function (oEvent) {
@@ -303,11 +389,11 @@ sap.ui.define([
         _clearFilters: function () {
             const oTable = this.byId("ProductsTable");
             const oFilterBar = this.byId("FilterBar");
-            const oFilterItemAll = this.byId("FilterAll");
+            const sFilterItemAll = "FilterAll";
 
             oTable.getBinding("items").filter(null);
 
-            oFilterBar.setSelectedKey(oFilterItemAll);
+            oFilterBar.setSelectedKey(sFilterItemAll);
         },
 
 
