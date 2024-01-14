@@ -6,6 +6,15 @@
         "description": "",
         "applicationVersion": {
             "version": "1.0.0"
+        },
+        "dataSources": {
+            "mainService": {
+                "uri": "http://localhost:3000/odata",
+                "type": "OData",
+                "settings": {
+                    "odataVersion": "2.0"
+                }
+            }
         }
     },
     "sap.ui": {
@@ -80,6 +89,17 @@
                 "sap.f": {},
                 "sap.ui.layout": {},
                 "sap.ui.core": {}
+            }
+        },
+        "models": {
+            "odata": {
+                "dataSource": "mainService",
+                "settings": {
+                    "useBatch": false,
+                    "defaultBindingMode": "TwoWay",
+                    "defaultCountMode": "Inline",
+                    "defaultOperationMode": "Server"
+                }
             }
         }
     }

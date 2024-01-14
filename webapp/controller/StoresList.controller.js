@@ -9,46 +9,7 @@ sap.ui.define([
 
         onSearch: function (oEvent) {
             const sSearchValue = oEvent.getParameter("query");
-            this.performStoreSearch(sSearchValue);
-        },
-
-        performStoreSearch: function (sSearchValue) {
-            const oList = this.byId("StoresList");
-            const oODataModel = this.getView().getModel("odata");
-            oODataModel.metadataLoaded().then(() => {
-                let oFilter = new Filter({
-                    filters: [
-                        new Filter({
-                            path: "Name",
-                            operator: FilterOperator.Contains,
-                            value1: sSearchValue,
-                            caseSensitive: false,
-                        }),
-                        new Filter({
-                            path: "Address",
-                            operator: FilterOperator.Contains,
-                            value1: sSearchValue,
-                        }),
-                    ],
-                    or: true
-                });
-
-                if (+sSearchValue) {
-                    oFilter = new Filter({
-                        filters: [
-                            oFilter,
-                            new Filter({
-                                path: "FloorArea",
-                                operator: FilterOperator.EQ,
-                                value1: +sSearchValue
-                            }),
-                        ],
-                        or: true,
-                    })
-                }
-
-                oList.getBinding("items").filter(oFilter);
-            })
+            this._performStoreSearch(sSearchValue);
         },
 
         onListItemPress: function (oEvent) {
@@ -69,5 +30,45 @@ sap.ui.define([
             const oRouter = this.getOwnerComponent().getRouter();
             oRouter.navTo(oEvent.getSource().getProperty("target"));
         },
+
+        _performStoreSearch: function (sSearchValue) {
+            const oList = this.byId("StoresList");
+            const oFilter = this._createFiltersForSearch(sSearchValue);
+            oList.getBinding("items").filter(oFilter);
+        },
+
+        _createFiltersForSearch: function (sSearchValue) {
+            let oFilter = new Filter({
+                filters: [
+                    new Filter({
+                        path: "Name",
+                        operator: FilterOperator.Contains,
+                        value1: sSearchValue,
+                    }),
+                    new Filter({
+                        path: "Address",
+                        operator: FilterOperator.Contains,
+                        value1: sSearchValue,
+                    }),
+                ],
+                or: true
+            });
+
+            if (+sSearchValue) {
+                oFilter = new Filter({
+                    filters: [
+                        oFilter,
+                        new Filter({
+                            path: "FloorArea",
+                            operator: FilterOperator.EQ,
+                            value1: +sSearchValue
+                        }),
+                    ],
+                    or: true,
+                })
+            }
+
+            return oFilter;
+        }
     });
 });

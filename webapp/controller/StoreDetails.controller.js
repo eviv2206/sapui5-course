@@ -13,12 +13,12 @@ sap.ui.define([
     const SORT_ASC = "ASC";
     const SORT_DESC = "DESC";
 
+    const FILTER_ALL_ITEM = "FilterAll";
+
     return Controller.extend("yauheni.sapryn.controller.StoreDetails", {
 
         onInit: function () {
-
-            this._oView = this.getView();
-            this._oView.addEventDelegate({onBeforeHide: this.onBeforeHide}, this)
+            this.getView().addEventDelegate({onBeforeHide: this.onBeforeHide}, this)
 
             const oRouter = this.getOwnerComponent().getRouter();
             const oCurrentRoute = oRouter.getHashChanger().getHash();
@@ -51,26 +51,13 @@ sap.ui.define([
                     model: "odata"
                 });
 
-                this._getProductsFilterCount(sStoreID, "", oODataModel, (length) => {
-                    this.byId("FilterAll").setCount(length);
-                });
+                const sSearchValue = this.byId("ProductSearchField").getValue();
 
-                this._getProductsFilterCount(sStoreID, "OK", oODataModel, (length) => {
-                    this.byId("FilterOk").setCount(length);
-                })
-
-                this._getProductsFilterCount(sStoreID, "STORAGE", oODataModel, (length) => {
-                    this.byId("FilterStorage").setCount(length);
-                });
-
-                this._getProductsFilterCount(sStoreID, "OUT_OF_STOCK", oODataModel, (length) => {
-                    this.byId("FilterOutOfStock").setCount(length);
-                })
-
+                this._updateAllFilters(oODataModel, sStoreID, sSearchValue);
             });
         },
 
-        onBeforeHide: function(oEvent) {
+        onBeforeHide: function (oEvent) {
             this._clearSearch();
             this._clearAllSorting();
             this._clearFilters();
@@ -154,29 +141,11 @@ sap.ui.define([
         onFilterSelect: function (oEvent) {
             const oBinding = this.byId("ProductsTable").getBinding("items");
             const sKey = oEvent.getParameter("key");
-            const aFilters = [];
+            const sSearchValue = this.byId("ProductSearchField").getValue();
 
-            if (sKey === "FilterOk") {
-                aFilters.push(new Filter({
-                    path: "Status",
-                    operator: FilterOperator.EQ,
-                    value1: "OK"
-                }));
-            } else if (sKey === "FilterStorage") {
-                aFilters.push(new Filter({
-                    path: "Status",
-                    operator: FilterOperator.EQ,
-                    value1: "STORAGE"
-                }));
-            } else if (sKey === "FilterOutOfStock") {
-                aFilters.push(new Filter({
-                    path: "Status",
-                    operator: FilterOperator.EQ,
-                    value1: "OUT_OF_STOCK"
-                }));
-            }
+            const oFilters = this._createFilterStatusWithSearch(sKey, sSearchValue);
 
-            oBinding.filter(aFilters);
+            oBinding.filter(oFilters);
         },
 
         onDeleteProductButtonPress: function (oEvent) {
@@ -211,6 +180,24 @@ sap.ui.define([
                 "Are you sure you want to delete this store?",
                 () => this._handleDeleteStore(oEvent, this),
             );
+        },
+
+        _updateAllFilters: function (oODataModel, sStoreID, sSearchValue) {
+            this._getProductsFilterCount(sStoreID, "", oODataModel, sSearchValue, (length) => {
+                this.byId("FilterAll").setCount(length);
+            });
+
+            this._getProductsFilterCount(sStoreID, "OK", oODataModel, sSearchValue, (length) => {
+                this.byId("FilterOk").setCount(length);
+            })
+
+            this._getProductsFilterCount(sStoreID, "STORAGE", oODataModel, sSearchValue, (length) => {
+                this.byId("FilterStorage").setCount(length);
+            });
+
+            this._getProductsFilterCount(sStoreID, "OUT_OF_STOCK", oODataModel, sSearchValue, (length) => {
+                this.byId("FilterOutOfStock").setCount(length);
+            })
         },
 
         _showMessageBox: function (title, message, onConfirm) {
@@ -266,8 +253,30 @@ sap.ui.define([
         },
 
 
+        _createFilterStatusWithSearch: function (filterValue, sSearchValue) {
+            if (filterValue === FILTER_ALL_ITEM) {
+                return this._createFiltersForSearch(sSearchValue);
+            } else {
+                return sSearchValue ? new Filter({
+                        filters: [
+                            this._createFiltersForSearch(sSearchValue),
+                            new Filter({
+                                path: "Status",
+                                operator: FilterOperator.EQ,
+                                value1: filterValue
+                            }),
+                        ],
+                        and: true
+                    }) :
+                    new Filter({
+                        path: "Status",
+                        operator: FilterOperator.EQ,
+                        value1: filterValue
+                    });
+            }
+        },
 
-        _createFilters: function (sSearchValue) {
+        _createFiltersForSearch: function (sSearchValue) {
             let oFilter = new Filter({
                 filters: [
                     new Filter({
@@ -322,14 +331,17 @@ sap.ui.define([
 
         _performProductSearch: function (sSearchValue) {
             const oTable = this.byId("ProductsTable");
+            const sStoreId = this.getView().getModel("selectedIds").getProperty("/StoreID");
             const oODataModel = this.getView().getModel("odata");
-            oODataModel.metadataLoaded().then(() => {
-                const oFilter = this._createFilters(sSearchValue);
-                oTable.getBinding("items").filter(oFilter);
-            });
+
+            const filterType = this.byId("FilterBar").getSelectedKey();
+            const oFilter = this._createFilterStatusWithSearch(filterType, sSearchValue);
+            oTable.getBinding("items").filter(oFilter);
+
+            this._updateAllFilters(oODataModel, sStoreId, sSearchValue);
         },
 
-        _getProductsFilterCount: function (storeId, filterType, odataModel, onSuccess) {
+        _getProductsFilterCount: function (storeId, filterType, oODataModel, sSearchValue, onSuccess) {
             let oFilter = new Filter({
                 filters: [
                     new Filter({
@@ -354,7 +366,18 @@ sap.ui.define([
                 });
             }
 
-            odataModel.read("/Products/$count", {
+            if (sSearchValue) {
+                oFilter = new Filter({
+                    filters: [
+                        oFilter,
+                        this._createFiltersForSearch(sSearchValue),
+                    ],
+                    and: true
+                });
+            }
+
+
+            oODataModel.read("/Products/$count", {
                 filters: [oFilter],
                 success: function (data) {
                     onSuccess(data);
@@ -389,16 +412,14 @@ sap.ui.define([
         _clearFilters: function () {
             const oTable = this.byId("ProductsTable");
             const oFilterBar = this.byId("FilterBar");
-            const sFilterItemAll = "FilterAll";
 
             oTable.getBinding("items").filter(null);
 
-            oFilterBar.setSelectedKey(sFilterItemAll);
+            oFilterBar.setSelectedKey(FILTER_ALL_ITEM);
         },
 
 
-
-        _compareFunction: function(value1, value2) {
+        _compareFunction: function (value1, value2) {
 
             if (typeof value1 == "string" && typeof value2 == "string") {
                 return value1.localeCompare(value2);

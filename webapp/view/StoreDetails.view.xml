@@ -76,21 +76,21 @@
                                 icon="sap-icon://accept"
                                 iconColor="Positive"
                                 text="Ok"
-                                key="FilterOk"
+                                key="OK"
                                 id="FilterOk"
                         />
                         <IconTabFilter
                                 icon="sap-icon://alert"
                                 iconColor="Critical"
                                 text="Storage"
-                                key="FilterStorage"
+                                key="STORAGE"
                                 id="FilterStorage"
                         />
                         <IconTabFilter
                                 icon="sap-icon://high-priority"
                                 iconColor="Negative"
                                 text="Out of stock"
-                                key="FilterOutOfStock"
+                                key="OUT_OF_STOCK"
                                 id="FilterOutOfStock"
                         />
                     </items>
