@@ -29,62 +29,55 @@ sap.ui.define([
                     model: "odata"
                 });
 
-                this.getProductsFilterCount(sStoreID, "", oODataModel, (length) => {
+                this._getProductsFilterCount(sStoreID, "", oODataModel, (length) => {
                     this.byId("FilterAll").setCount(length);
                 });
 
-                this.getProductsFilterCount(sStoreID, "OK", oODataModel, (length) => {
+                this._getProductsFilterCount(sStoreID, "OK", oODataModel, (length) => {
                     this.byId("FilterOk").setCount(length);
                 })
 
-                this.getProductsFilterCount(sStoreID, "STORAGE", oODataModel, (length) => {
+                this._getProductsFilterCount(sStoreID, "STORAGE", oODataModel, (length) => {
                     this.byId("FilterStorage").setCount(length);
                 });
 
-                this.getProductsFilterCount(sStoreID, "OUT_OF_STOCK", oODataModel, (length) => {
+                this._getProductsFilterCount(sStoreID, "OUT_OF_STOCK", oODataModel, (length) => {
                     this.byId("FilterOutOfStock").setCount(length);
                 })
 
             });
         },
 
-        getProductsFilterCount: function (storeId, filterType, odataModel, onSuccess) {
-            let oFilter;
+        _getProductsFilterCount: function (nStoreId, sFilterType, oODataModel, fOnSuccess) {
+            let oFilter = new Filter({
+                filters: [
+                    new Filter({
+                        path: "StoreId",
+                        operator: FilterOperator.EQ,
+                        value1: nStoreId
+                    })
+                ],
+            });
 
-            if (filterType === "") {
+            if (sFilterType !== "") {
                 oFilter = new Filter({
                     filters: [
-                        new Filter({
-                            path: "StoreId",
-                            operator: FilterOperator.EQ,
-                            value1: storeId
-                        })
-                    ],
-                });
-
-            } else {
-                oFilter = new Filter({
-                    filters: [
-                        new Filter({
-                            path: "StoreId",
-                            operator: FilterOperator.EQ,
-                            value1: storeId
-                        }),
-
+                        oFilter,
                         new Filter({
                             path: "Status",
                             operator: FilterOperator.EQ,
-                            value1: filterType,
+                            value1: sFilterType,
                         }),
                     ],
                     and: true
                 });
             }
 
-            odataModel.read("/Products", {
+
+            oODataModel.read("/Products/$count", {
                 filters: [oFilter],
                 success: function (data) {
-                    onSuccess(data.results.length);
+                    fOnSuccess(data);
                 },
             });
         },
