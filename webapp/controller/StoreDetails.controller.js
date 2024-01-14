@@ -118,6 +118,5 @@ sap.ui.define([
                 ProductID: productId,
             });
         }
-
     });
 });
