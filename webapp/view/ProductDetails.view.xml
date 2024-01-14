@@ -1,7 +1,6 @@
 <mvc:View
         xmlns="sap.m"
         xmlns:f="sap.f"
-        xmlns:layout="sap.ui.layout"
         xmlns:mvc="sap.ui.core.mvc"
         controllerName="yauheni.sapryn.controller.ProductDetails">
 
@@ -22,29 +21,29 @@
         </f:title>
         <f:header>
             <f:DynamicPageHeader pinnable="true">
-                <layout:HorizontalLayout>
-                    <layout:VerticalLayout class="sapUiSmallMarginEnd">
-                        <FlexBox alignItems="Center">
+                <HBox>
+                    <VBox class="sapUiSmallMarginEnd">
+                        <HBox alignItems="Center">
                             <Label text="Price:" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"/>
                             <Text text="{odata>Price} USD"/>
-                        </FlexBox>
-                        <FlexBox alignItems="Center">
+                        </HBox>
+                        <HBox alignItems="Center">
                             <Label text="Rating:" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"/>
                             <Text text="{odata>Rating}"/>
-                        </FlexBox>
-                    </layout:VerticalLayout>
-                    <layout:VerticalLayout class="sapUiSmallMarginEnd">
-                        <FlexBox alignItems="Center">
+                        </HBox>
+                    </VBox>
+                    <VBox class="sapUiSmallMarginEnd">
+                        <HBox alignItems="Center">
                             <Label text="Made in:" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"/>
                             <Text text="{odata>MadeIn}"/>
-                        </FlexBox>
-                    </layout:VerticalLayout>
-                    <layout:VerticalLayout>
-                        <FlexBox alignItems="Center">
+                        </HBox>
+                    </VBox>
+                    <VBox>
+                        <HBox alignItems="Center">
                             <Label text="Production company:" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"/>
                             <Text text="{odata>ProductionCompanyName}"/>
-                        </FlexBox>
-                        <FlexBox alignItems="Center">
+                        </HBox>
+                        <HBox alignItems="Center">
                             <Label text="Status:" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"/>
                             <ObjectStatus
                                     text="{path: 'odata>Status', formatter: '.formatStatus'}"
@@ -53,11 +52,10 @@
                                     active="true"
                                     id="ProductStatus"
                             />
-                            <Text />
-                        </FlexBox>
-                    </layout:VerticalLayout>
-                </layout:HorizontalLayout>
-                <layout:VerticalLayout>
+                        </HBox>
+                    </VBox>
+                </HBox>
+                <VBox class="sapUiSmallMarginEnd">
                     <FlexBox alignItems="Center">
                         <Label text="Specs:" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"/>
                         <Text text="{odata>Specs}"/>
@@ -66,7 +64,7 @@
                         <Label text="Supplier info:" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"/>
                         <Text text="{odata>SupplierInfo}"/>
                     </FlexBox>
-                </layout:VerticalLayout>
+                </VBox>
             </f:DynamicPageHeader>
         </f:header>
         <f:content>

@@ -1,7 +1,6 @@
 <mvc:View
         xmlns="sap.m"
         xmlns:f="sap.f"
-        xmlns:layout="sap.ui.layout"
         xmlns:mvc="sap.ui.core.mvc"
         controllerName="yauheni.sapryn.controller.StoreDetails">
 
@@ -21,24 +20,24 @@
         </f:title>
         <f:header>
             <f:DynamicPageHeader pinnable="true">
-                <layout:HorizontalLayout>
-                    <layout:VerticalLayout class="sapUiSmallMarginEnd">
-                        <FlexBox alignItems="Center">
+                <HBox>
+                    <VBox class="sapUiSmallMarginEnd">
+                        <HBox alignItems="Center">
                             <Label text="Email:" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"/>
                             <Text text="{odata>Email}"/>
-                        </FlexBox>
-                        <FlexBox alignItems="Center">
+                        </HBox>
+                        <HBox alignItems="Center">
                             <Label text="Phone Number:" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"/>
                             <Text text="{odata>PhoneNumber}"/>
-                        </FlexBox>
-                        <FlexBox alignItems="Center">
+                        </HBox>
+                        <HBox alignItems="Center">
                             <Label text="Address:" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"/>
                             <Text text="{odata>Address}"/>
-                        </FlexBox>
-                    </layout:VerticalLayout>
+                        </HBox>
+                    </VBox>
 
-                    <layout:VerticalLayout>
-                        <FlexBox alignItems="Center">
+                    <VBox>
+                        <HBox alignItems="Center">
                             <Label text="Established Date:" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"/>
                             <Text text="{
                         path: 'odata>Established',
@@ -47,14 +46,14 @@
                             pattern: 'dd MMM yyyy'
                         }
                         }"/>
-                        </FlexBox>
-                        <FlexBox alignItems="Center">
+                        </HBox>
+                        <HBox alignItems="Center">
                             <Label text="Floor Area:" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"/>
                             <Text text="{odata>FloorArea}"/>
-                        </FlexBox>
-                    </layout:VerticalLayout>
+                        </HBox>
+                    </VBox>
 
-                </layout:HorizontalLayout>
+                </HBox>
             </f:DynamicPageHeader>
         </f:header>
         <f:content>
