@@ -1,9 +1,20 @@
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/ui/model/Filter",
-    "sap/ui/model/FilterOperator"
-], function (Controller, Filter, FilterOperator) {
+    "sap/ui/model/FilterOperator",
+    "../Constants",
+], function (Controller, Filter, FilterOperator, Constants) {
     "use strict";
+
+    const VIEW_ID = {
+        STORES_LIST_VIEW: "StoresList",
+    };
+
+    const STORE_PATH = {
+        NAME: "Name",
+        ADDRESS: "Address",
+        FLOOR_AREA: "FloorArea",
+    };
 
     return Controller.extend("yauheni.sapryn.controller.StoresList", {
 
@@ -15,13 +26,13 @@ sap.ui.define([
         onListItemPress: function (oEvent) {
             const oSource = oEvent.getSource();
 
-            const oCtx = oSource.getBindingContext("odata");
+            const oCtx = oSource.getBindingContext(Constants.ODATA_MODEL);
 
             const oComponent = this.getOwnerComponent();
 
             const storeId = oCtx.getObject("id");
 
-            oComponent.getRouter().navTo("StoreDetails", {
+            oComponent.getRouter().navTo(Constants.STORE_DETAILS_ROUTE, {
                 StoreID: storeId,
             });
         },
@@ -32,7 +43,7 @@ sap.ui.define([
         },
 
         _performStoreSearch: function (sSearchValue) {
-            const oList = this.byId("StoresList");
+            const oList = this.byId(VIEW_ID.STORES_LIST_VIEW);
             const oFilter = this._createFiltersForSearch(sSearchValue);
             oList.getBinding("items").filter(oFilter);
         },
@@ -41,12 +52,12 @@ sap.ui.define([
             let oFilter = new Filter({
                 filters: [
                     new Filter({
-                        path: "Name",
+                        path: STORE_PATH.NAME,
                         operator: FilterOperator.Contains,
                         value1: sSearchValue,
                     }),
                     new Filter({
-                        path: "Address",
+                        path: STORE_PATH.ADDRESS,
                         operator: FilterOperator.Contains,
                         value1: sSearchValue,
                     }),
@@ -59,7 +70,7 @@ sap.ui.define([
                     filters: [
                         oFilter,
                         new Filter({
-                            path: "FloorArea",
+                            path: STORE_PATH.FLOOR_AREA,
                             operator: FilterOperator.EQ,
                             value1: +sSearchValue
                         }),

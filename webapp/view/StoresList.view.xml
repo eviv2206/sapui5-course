@@ -26,25 +26,25 @@
             <List items="{odata>/Stores}" id="StoresList">
                 <CustomListItem type="Active" press="onListItemPress">
                     <VBox>
-                        <FlexBox justifyContent="SpaceBetween" class="sapUiSmallMarginBeginEnd sapUiTinyMarginBottom sapUiSmallMarginTop">
+                        <HBox justifyContent="SpaceBetween" class="sapUiSmallMarginBeginEnd sapUiTinyMarginBottom sapUiSmallMarginTop">
                             <Title text="{odata>Name}"/>
                             <FlexBox direction="Column" alignItems="End">
                                 <Text text="{odata>FloorArea}"/>
                                 <Text text="sq.m"/>
                             </FlexBox>
-                        </FlexBox>
-                        <FlexBox justifyContent="Start" class="sapUiSmallMarginBeginEnd sapUiTinyMarginBottom sapUiSmallMarginBottom">
+                        </HBox>
+                        <HBox justifyContent="Start" class="sapUiSmallMarginBeginEnd sapUiTinyMarginBottom sapUiSmallMarginBottom">
                             <Text text="{odata>Address}"/>
-                        </FlexBox>
+                        </HBox>
                     </VBox>
                 </CustomListItem>
             </List>
         </f:content>
         <f:footer>
             <OverflowToolbar>
-                <FlexBox justifyContent="End" width="100%">
+                <HBox justifyContent="End" width="100%">
                     <Button type="Ghost" text="Create" icon="sap-icon://add" class="sapUiTinyMarginEnd"/>
-                </FlexBox>
+                </HBox>
             </OverflowToolbar>
         </f:footer>
     </f:DynamicPage>

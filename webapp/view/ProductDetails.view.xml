@@ -23,29 +23,29 @@
         </f:title>
         <f:header>
             <f:DynamicPageHeader pinnable="true">
-                <layout:HorizontalLayout>
-                    <layout:VerticalLayout class="sapUiSmallMarginEnd">
-                        <FlexBox alignItems="Center">
+                <HBox>
+                    <VBox class="sapUiSmallMarginEnd">
+                        <HBox alignItems="Center">
                             <Label text="Price:" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"/>
                             <Text text="{odata>Price} USD"/>
-                        </FlexBox>
-                        <FlexBox alignItems="Center">
+                        </HBox>
+                        <HBox alignItems="Center">
                             <Label text="Rating:" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"/>
                             <Text text="{odata>Rating}"/>
-                        </FlexBox>
-                    </layout:VerticalLayout>
-                    <layout:VerticalLayout class="sapUiSmallMarginEnd">
-                        <FlexBox alignItems="Center">
+                        </HBox>
+                    </VBox>
+                    <VBox class="sapUiSmallMarginEnd">
+                        <HBox alignItems="Center">
                             <Label text="Made in:" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"/>
                             <Text text="{odata>MadeIn}"/>
-                        </FlexBox>
-                    </layout:VerticalLayout>
-                    <layout:VerticalLayout>
-                        <FlexBox alignItems="Center">
+                        </HBox>
+                    </VBox>
+                    <VBox>
+                        <HBox alignItems="Center">
                             <Label text="Production company:" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"/>
                             <Text text="{odata>ProductionCompanyName}"/>
-                        </FlexBox>
-                        <FlexBox alignItems="Center">
+                        </HBox>
+                        <HBox alignItems="Center">
                             <Label text="Status:" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"/>
                             <ObjectStatus
                                     text="{path: 'odata>Status', formatter: '.formatStatus'}"
@@ -55,19 +55,19 @@
                                     id="ProductStatus"
                             />
                             <Text/>
-                        </FlexBox>
-                    </layout:VerticalLayout>
-                </layout:HorizontalLayout>
-                <layout:VerticalLayout>
-                    <FlexBox alignItems="Center">
+                        </HBox>
+                    </VBox>
+                </HBox>
+                <VBox>
+                    <HBox alignItems="Center">
                         <Label text="Specs:" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"/>
                         <Text text="{odata>Specs}"/>
-                    </FlexBox>
-                    <FlexBox alignItems="Center">
+                    </HBox>
+                    <HBox alignItems="Center">
                         <Label text="Supplier info:" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"/>
                         <Text text="{odata>SupplierInfo}"/>
-                    </FlexBox>
-                </layout:VerticalLayout>
+                    </HBox>
+                </VBox>
             </f:DynamicPageHeader>
         </f:header>
         <f:content>
@@ -76,19 +76,19 @@
                         layout="ResponsiveGridLayout"
                         >
                     <form:content>
-                        <FlexBox direction="Column">
-                            <FlexBox alignItems="Center">
+                        <VBox>
+                            <HBox alignItems="Center">
                                 <Label text="Author name:" class="sapUiSmallMarginEnd"/>
                                 <Input placeholder="Enter name" value="{viewModel>/authorName}" required="true"/>
                                 <Label text="Rating:" class="sapUiSmallMarginEnd"/>
                                 <RatingIndicator editable="true" maxValue="5" value="{viewModel>/ratingValue}"
                                                  required="true"/>
-                            </FlexBox>
+                            </HBox>
                             <FeedInput
                                     placeholder="Post something here"
                                     showIcon="true"
                             />
-                        </FlexBox>
+                        </VBox>
                     </form:content>
                 </form:SimpleForm>
                 <List
