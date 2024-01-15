@@ -1,9 +1,22 @@
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/ui/model/Filter",
-    "sap/ui/model/FilterOperator"
-], function (Controller, Filter, FilterOperator) {
+    "sap/ui/model/FilterOperator",
+    "../Constants"
+], function (Controller, Filter, FilterOperator, Constants) {
     "use strict";
+
+    const FILTER_PATH = {
+        STATUS: "Status",
+        STORE_ID: "StoreId",
+    };
+
+    const VIEW_ID = {
+        FILTER_ALL: "FilterAll",
+        FILTER_OK: "FilterOk",
+        FILTER_STORAGE: "FilterStorage",
+        FILTER_OUT_OF_STOCK: "FilterOutOfStock",
+    };
 
     return Controller.extend("yauheni.sapryn.controller.StoreDetails", {
 
@@ -11,38 +24,36 @@ sap.ui.define([
             const oRouter = this.getOwnerComponent().getRouter();
             const oCurrentRoute = oRouter.getHashChanger().getHash();
             const oParameters = oRouter.getRouteInfoByHash(oCurrentRoute);
+            this.getOwnerComponent().getModel(Constants.SELECTED_IDS_MODEL).setProperty("/StoreID", oParameters.arguments.StoreID);
 
-            this.getOwnerComponent().getModel("selectedIds").setProperty("/StoreID", oParameters.arguments.StoreID);
-
-            oRouter.getRoute("StoreDetails").attachPatternMatched(this.onPatternMatched, this);
+            oRouter.getRoute(Constants.STORE_DETAILS_ROUTE).attachPatternMatched(this.onPatternMatched, this);
         },
 
         onPatternMatched: function (oEvent) {
             const mRouteArguments = oEvent.getParameter("arguments");
             const sStoreID = mRouteArguments.StoreID;
-            const oODataModel = this.getView().getModel("odata");
+            const oODataModel = this.getView().getModel(Constants.ODATA_MODEL);
             oODataModel.metadataLoaded().then(() => {
-
-                const sPath = oODataModel.createKey("/Stores", {id: sStoreID});
+                const sPath = oODataModel.createKey(`/${Constants.STORES_URL_PATH}`, {id: sStoreID});
                 this.getView().bindObject({
                     path: sPath,
-                    model: "odata"
+                    model: Constants.ODATA_MODEL
                 });
 
-                this._getProductsFilterCount(sStoreID, "", oODataModel, (length) => {
-                    this.byId("FilterAll").setCount(length);
+                this._getProductsFilterCount(sStoreID, Constants.STATUS_TYPE_ALL, oODataModel, (length) => {
+                    this.byId(VIEW_ID.FILTER_ALL).setCount(length);
                 });
 
-                this._getProductsFilterCount(sStoreID, "OK", oODataModel, (length) => {
-                    this.byId("FilterOk").setCount(length);
+                this._getProductsFilterCount(sStoreID, Constants.STATUS_TYPE_OK, oODataModel, (length) => {
+                    this.byId(VIEW_ID.FILTER_OK).setCount(length);
                 })
 
-                this._getProductsFilterCount(sStoreID, "STORAGE", oODataModel, (length) => {
-                    this.byId("FilterStorage").setCount(length);
+                this._getProductsFilterCount(sStoreID, Constants.STATUS_TYPE_STORAGE, oODataModel, (length) => {
+                    this.byId(VIEW_ID.FILTER_STORAGE).setCount(length);
                 });
 
-                this._getProductsFilterCount(sStoreID, "OUT_OF_STOCK", oODataModel, (length) => {
-                    this.byId("FilterOutOfStock").setCount(length);
+                this._getProductsFilterCount(sStoreID, Constants.STATUS_TYPE_OUT_OF_STOCK, oODataModel, (length) => {
+                    this.byId(VIEW_ID.FILTER_OUT_OF_STOCK).setCount(length);
                 })
 
             });
@@ -52,7 +63,7 @@ sap.ui.define([
             let oFilter = new Filter({
                 filters: [
                     new Filter({
-                        path: "StoreId",
+                        path: FILTER_PATH.STORE_ID,
                         operator: FilterOperator.EQ,
                         value1: nStoreId
                     })
@@ -64,7 +75,7 @@ sap.ui.define([
                     filters: [
                         oFilter,
                         new Filter({
-                            path: "Status",
+                            path: FILTER_PATH.STATUS,
                             operator: FilterOperator.EQ,
                             value1: sFilterType,
                         }),
@@ -74,7 +85,7 @@ sap.ui.define([
             }
 
 
-            oODataModel.read("/Products/$count", {
+            oODataModel.read(`/${Constants.PRODUCTS_URL_PATH}/$count`, {
                 filters: [oFilter],
                 success: function (data) {
                     fOnSuccess(data);
@@ -89,7 +100,7 @@ sap.ui.define([
 
         onLinkStoreDetailsPress: function (oEvent) {
             const oRouter = this.getOwnerComponent().getRouter();
-            const sStoreId = this.getView().getModel("selectedIds").getProperty("/StoreID");
+            const sStoreId = this.getView().getModel(Constants.SELECTED_IDS_MODEL).getProperty("/StoreID");
             oRouter.navTo(oEvent.getSource().getProperty("target"), {
                 StoreID: sStoreId
             });
@@ -98,15 +109,15 @@ sap.ui.define([
         onTableItemPress: function (oEvent) {
             const oSource = oEvent.getSource();
 
-            const oCtx = oSource.getBindingContext("odata");
+            const oCtx = oSource.getBindingContext(Constants.ODATA_MODEL);
 
             const oComponent = this.getOwnerComponent();
 
             const productId = oCtx.getObject("id");
 
-            const storeId = this.getView().getModel("selectedIds").getProperty("/StoreID");
+            const storeId = this.getView().getModel(Constants.SELECTED_IDS_MODEL).getProperty("/StoreID");
 
-            oComponent.getRouter().navTo("ProductDetails", {
+            oComponent.getRouter().navTo(Constants.PRODUCT_DETAILS_ROUTE, {
                 StoreID: storeId,
                 ProductID: productId,
             });

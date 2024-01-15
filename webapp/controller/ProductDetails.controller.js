@@ -3,9 +3,15 @@ sap.ui.define([
     "sap/ui/model/json/JSONModel",
     "sap/ui/core/format/DateFormat",
     "sap/ui/model/Filter",
-    "sap/ui/model/FilterOperator"
-], function (Controller, JSONModel, DateFormat, Filter, FilterOperator) {
+    "sap/ui/model/FilterOperator",
+    "../Constants",
+], function (Controller, JSONModel, DateFormat, Filter, FilterOperator, Constants) {
     "use strict";
+
+    const VIEW_ID = {
+        COMMENTS_LIST: "CommentsList",
+    };
+
 
     return Controller.extend("yauheni.sapryn.controller.ProductDetails", {
 
@@ -14,57 +20,57 @@ sap.ui.define([
             const oCurrentRoute = oRouter.getHashChanger().getHash();
             const oParameters = oRouter.getRouteInfoByHash(oCurrentRoute);
 
-            this.getOwnerComponent().getModel("selectedIds").setProperty("/StoreID", oParameters.arguments.StoreID);
-            this.getOwnerComponent().getModel("selectedIds").setProperty("/ProductID", oParameters.arguments.ProductID);
+            this.getOwnerComponent().getModel(Constants.SELECTED_IDS_MODEL).setProperty("/StoreID", oParameters.arguments.StoreID);
+            this.getOwnerComponent().getModel(Constants.SELECTED_IDS_MODEL).setProperty("/ProductID", oParameters.arguments.ProductID);
 
-            oRouter.getRoute("ProductDetails").attachPatternMatched(this.onPatternMatched, this);
+            oRouter.getRoute(Constants.PRODUCT_DETAILS_ROUTE).attachPatternMatched(this.onPatternMatched, this);
 
         },
 
         onPatternMatched: function (oEvent) {
             const mRouteArguments = oEvent.getParameter("arguments");
             const sProductID = mRouteArguments.ProductID;
-            const oODataModel = this.getView().getModel("odata");
+            const oODataModel = this.getView().getModel(Constants.ODATA_MODEL);
 
             oODataModel.metadataLoaded().then(() => {
-                const sProductPath = oODataModel.createKey("/Products", {id: sProductID});
+                const sProductPath = oODataModel.createKey(`/${Constants.PRODUCTS_URL_PATH}`, {id: sProductID});
 
                 this.getView().bindObject({
                     path: sProductPath,
-                    model: "odata"
+                    model: Constants.ODATA_MODEL
                 });
 
                 const oFilter = new Filter("ProductId", FilterOperator.EQ, sProductID);
 
-                const sCommentsPath = "/ProductComments";
-                this.byId("CommentsList").bindObject({
+                const sCommentsPath = `/${Constants.PRODUCT_COMMENTS_URL_PATH}`;
+                this.byId(VIEW_ID.COMMENTS_LIST).bindObject({
                     path: sCommentsPath,
-                    model: "odata",
+                    model: Constants.ODATA_MODEL,
                 });
 
-                this.byId("CommentsList").getBinding("items").filter(oFilter);
+                this.byId(VIEW_ID.COMMENTS_LIST).getBinding("items").filter(oFilter);
 
             })
         },
 
         formatStatus: function (sStatus) {
             switch (sStatus) {
-                case "OK":
+                case Constants.STATUS_TYPE_OK:
                     return "Ok";
-                case "STORAGE":
+                case Constants.STATUS_TYPE_STORAGE:
                     return "Storage";
-                case "OUT_OF_STOCK":
+                case Constants.STATUS_TYPE_OUT_OF_STOCK:
                     return "Out of stock";
             }
         },
 
         formatState: function (sStatus) {
             switch (sStatus) {
-                case "OK":
+                case Constants.STATUS_TYPE_OK:
                     return "Success";
-                case "STORAGE":
+                case Constants.STATUS_TYPE_STORAGE:
                     return "Indication03";
-                case "OUT_OF_STOCK":
+                case Constants.STATUS_TYPE_OUT_OF_STOCK:
                     return "Indication01";
             }
         },
@@ -76,16 +82,16 @@ sap.ui.define([
 
         onLinkStoreDetailsPress: function (oEvent) {
             const oRouter = this.getOwnerComponent().getRouter();
-            const sStoreId = this.getView().getModel("selectedIds").getProperty("/StoreID");
-            oRouter.navTo("StoreDetails", {
+            const sStoreId = this.getView().getModel(Constants.SELECTED_IDS_MODEL).getProperty("/StoreID");
+            oRouter.navTo(Constants.STORE_DETAILS_ROUTE, {
                 StoreID: sStoreId
             });
         },
 
         onLinkProductDetailsPress: function (oEvent) {
             const oRouter = this.getOwnerComponent().getRouter();
-            const sProductId = this.getView().getModel("selectedIds").getProperty("/ProductID");
-            oRouter.navTo("ProductDetails", {
+            const sProductId = this.getView().getModel(Constants.SELECTED_IDS_MODEL).getProperty("/ProductID");
+            oRouter.navTo(Constants.PRODUCT_DETAILS_ROUTE, {
                 ProductID: sProductId
             });
         },

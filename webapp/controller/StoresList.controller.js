@@ -1,6 +1,7 @@
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
-], function (Controller) {
+    "../Constants"
+], function (Controller, Constants) {
     "use strict";
 
     return Controller.extend("yauheni.sapryn.controller.StoresList", {
@@ -8,13 +9,13 @@ sap.ui.define([
         onListItemPress: function (oEvent) {
             const oSource = oEvent.getSource();
 
-            const oCtx = oSource.getBindingContext("odata");
+            const oCtx = oSource.getBindingContext(Constants.ODATA_MODEL);
 
             const oComponent = this.getOwnerComponent();
 
             const storeId = oCtx.getObject("id");
 
-            oComponent.getRouter().navTo("StoreDetails", {
+            oComponent.getRouter().navTo(Constants.STORE_DETAILS_ROUTE, {
                 StoreID: storeId,
             });
         },
