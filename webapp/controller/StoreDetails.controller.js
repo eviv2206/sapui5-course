@@ -22,16 +22,14 @@ sap.ui.define([
 
         onInit: function () {
             const oRouter = this.getOwnerComponent().getRouter();
-            const oCurrentRoute = oRouter.getHashChanger().getHash();
-            const oParameters = oRouter.getRouteInfoByHash(oCurrentRoute);
-            this.getOwnerComponent().getModel(Constants.SELECTED_IDS_MODEL).setProperty("/StoreID", oParameters.arguments.StoreID);
-
             oRouter.getRoute(Constants.STORE_DETAILS_ROUTE).attachPatternMatched(this.onPatternMatched, this);
         },
 
         onPatternMatched: function (oEvent) {
             const mRouteArguments = oEvent.getParameter("arguments");
             const sStoreID = mRouteArguments.StoreID;
+            this.getOwnerComponent().getModel(Constants.SELECTED_IDS_MODEL).setProperty("/StoreID", sStoreID);
+
             const oODataModel = this.getView().getModel(Constants.ODATA_MODEL);
             oODataModel.metadataLoaded().then(() => {
                 const sPath = oODataModel.createKey(`/${Constants.STORES_URL_PATH}`, {id: sStoreID});

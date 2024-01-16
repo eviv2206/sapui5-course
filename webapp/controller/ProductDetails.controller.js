@@ -17,21 +17,17 @@ sap.ui.define([
 
         onInit: function () {
             const oRouter = this.getOwnerComponent().getRouter();
-            const oCurrentRoute = oRouter.getHashChanger().getHash();
-            const oParameters = oRouter.getRouteInfoByHash(oCurrentRoute);
-
-            this.getOwnerComponent().getModel(Constants.SELECTED_IDS_MODEL).setProperty("/StoreID", oParameters.arguments.StoreID);
-            this.getOwnerComponent().getModel(Constants.SELECTED_IDS_MODEL).setProperty("/ProductID", oParameters.arguments.ProductID);
-
             oRouter.getRoute(Constants.PRODUCT_DETAILS_ROUTE).attachPatternMatched(this.onPatternMatched, this);
-
         },
 
         onPatternMatched: function (oEvent) {
             const mRouteArguments = oEvent.getParameter("arguments");
+            const sStoreID = mRouteArguments.StoreID;
             const sProductID = mRouteArguments.ProductID;
-            const oODataModel = this.getView().getModel(Constants.ODATA_MODEL);
+            this.getOwnerComponent().getModel(Constants.SELECTED_IDS_MODEL).setProperty("/StoreID", sStoreID);
+            this.getOwnerComponent().getModel(Constants.SELECTED_IDS_MODEL).setProperty("/ProductID", sProductID);
 
+            const oODataModel = this.getView().getModel(Constants.ODATA_MODEL);
             oODataModel.metadataLoaded().then(() => {
                 const sProductPath = oODataModel.createKey(`/${Constants.PRODUCTS_URL_PATH}`, {id: sProductID});
 
@@ -49,7 +45,6 @@ sap.ui.define([
                 });
 
                 this.byId(VIEW_ID.COMMENTS_LIST).getBinding("items").filter(oFilter);
-
             })
         },
 
