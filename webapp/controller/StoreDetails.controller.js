@@ -27,6 +27,7 @@ sap.ui.define([
 
         onPatternMatched: function (oEvent) {
             const mRouteArguments = oEvent.getParameter("arguments");
+
             const sStoreID = mRouteArguments.StoreID;
             this.getOwnerComponent().getModel(Constants.SELECTED_IDS_MODEL).setProperty("/StoreID", sStoreID);
 
@@ -38,23 +39,27 @@ sap.ui.define([
                     model: Constants.ODATA_MODEL
                 });
 
-                this._getProductsFilterCount(sStoreID, Constants.STATUS_TYPE_ALL, oODataModel, (length) => {
-                    this.byId(VIEW_ID.FILTER_ALL).setCount(length);
-                });
-
-                this._getProductsFilterCount(sStoreID, Constants.STATUS_TYPE_OK, oODataModel, (length) => {
-                    this.byId(VIEW_ID.FILTER_OK).setCount(length);
-                })
-
-                this._getProductsFilterCount(sStoreID, Constants.STATUS_TYPE_STORAGE, oODataModel, (length) => {
-                    this.byId(VIEW_ID.FILTER_STORAGE).setCount(length);
-                });
-
-                this._getProductsFilterCount(sStoreID, Constants.STATUS_TYPE_OUT_OF_STOCK, oODataModel, (length) => {
-                    this.byId(VIEW_ID.FILTER_OUT_OF_STOCK).setCount(length);
-                })
+                this._setAllProductsFilterCount(oODataModel, sStoreID);
 
             });
+        },
+
+        _setAllProductsFilterCount: function (oODataModel, sStoreID) {
+            this._getProductsFilterCount(sStoreID, Constants.STATUS_TYPE_ALL, oODataModel, (length) => {
+                this.byId(VIEW_ID.FILTER_ALL).setCount(length);
+            });
+
+            this._getProductsFilterCount(sStoreID, Constants.STATUS_TYPE_OK, oODataModel, (length) => {
+                this.byId(VIEW_ID.FILTER_OK).setCount(length);
+            })
+
+            this._getProductsFilterCount(sStoreID, Constants.STATUS_TYPE_STORAGE, oODataModel, (length) => {
+                this.byId(VIEW_ID.FILTER_STORAGE).setCount(length);
+            });
+
+            this._getProductsFilterCount(sStoreID, Constants.STATUS_TYPE_OUT_OF_STOCK, oODataModel, (length) => {
+                this.byId(VIEW_ID.FILTER_OUT_OF_STOCK).setCount(length);
+            })
         },
 
         _getProductsFilterCount: function (nStoreId, sFilterType, oODataModel, fOnSuccess) {

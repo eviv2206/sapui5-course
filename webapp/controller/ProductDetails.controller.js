@@ -22,6 +22,7 @@ sap.ui.define([
 
         onPatternMatched: function (oEvent) {
             const mRouteArguments = oEvent.getParameter("arguments");
+
             const sStoreID = mRouteArguments.StoreID;
             const sProductID = mRouteArguments.ProductID;
             this.getOwnerComponent().getModel(Constants.SELECTED_IDS_MODEL).setProperty("/StoreID", sStoreID);
