@@ -72,25 +72,46 @@
         </f:header>
         <f:content>
             <VBox>
-                <form:SimpleForm
-                        layout="ResponsiveGridLayout"
-                        >
-                    <form:content>
-                        <VBox>
-                            <HBox alignItems="Center">
-                                <Label text="Author name:" class="sapUiSmallMarginEnd"/>
-                                <Input placeholder="Enter name" value="{viewModel>/authorName}" required="true"/>
-                                <Label text="Rating:" class="sapUiSmallMarginEnd"/>
-                                <RatingIndicator editable="true" maxValue="5" value="{viewModel>/ratingValue}"
-                                                 required="true"/>
-                            </HBox>
-                            <FeedInput
-                                    placeholder="Post something here"
-                                    showIcon="true"
-                            />
-                        </VBox>
-                    </form:content>
-                </form:SimpleForm>
+                <VBox>
+                    <HBox alignItems="Center">
+                        <Label text="Author name:" class="sapUiSmallMarginEnd" required="true" labelFor="AuthorInput"/>
+                        <Input
+                                placeholder="Enter author name..."
+                                valueStateText="Author name is required!"
+                                value="{
+                                    path : 'appView>/Author',
+                                    type : 'sap.ui.model.type.String',
+                                    constraints : {
+                                        minLength: 1
+                                    }
+                                }"
+                                id="AuthorInput"
+                                change="onAuthorChange"
+                        />
+                        <Label text="Rating:" class="sapUiSmallMarginEnd" labelFor="RatingIndicator"/>
+                        <RatingIndicator
+                                editable="true"
+                                maxValue="5"
+                                required="true"
+                                value="{appView>/Rating}"
+                                id="RatingIndicator"
+                        />
+                    </HBox>
+                    <FeedInput
+                            placeholder="Post something here"
+                            showIcon="true"
+                            value="{
+                                path : 'appView>/Comment',
+                                type : 'sap.ui.model.type.String',
+				                constraints : {
+					                minLength: 1,
+					                maxLength: 30
+				                }
+                            }"
+                            id="CommentInput"
+                            post="onPostCommentSend"
+                    />
+                </VBox>
                 <List
                         id="CommentsList"
                         showSeparators="Inner"
