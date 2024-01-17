@@ -59,9 +59,13 @@ sap.ui.define([
 
         onPatternMatched: function (oEvent) {
             const mRouteArguments = oEvent.getParameter("arguments");
-            const sProductID = mRouteArguments.ProductID;
-            const oODataModel = this.getView().getModel(Constants.ODATA_MODEL);
 
+            const sStoreID = mRouteArguments.StoreID;
+            const sProductID = mRouteArguments.ProductID;
+            this.getOwnerComponent().getModel(Constants.SELECTED_IDS_MODEL).setProperty("/StoreID", sStoreID);
+            this.getOwnerComponent().getModel(Constants.SELECTED_IDS_MODEL).setProperty("/ProductID", sProductID);
+
+            const oODataModel = this.getView().getModel(Constants.ODATA_MODEL);
             oODataModel.metadataLoaded().then(() => {
                 const sProductPath = oODataModel.createKey(`/${Constants.PRODUCTS_URL_PATH}`, {id: sProductID});
 

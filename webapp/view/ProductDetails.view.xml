@@ -1,7 +1,6 @@
 <mvc:View
         xmlns="sap.m"
         xmlns:f="sap.f"
-        xmlns:form="sap.ui.layout.form"
         xmlns:layout="sap.ui.layout"
         xmlns:mvc="sap.ui.core.mvc"
         controllerName="yauheni.sapryn.controller.ProductDetails">
