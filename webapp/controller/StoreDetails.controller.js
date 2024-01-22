@@ -6,8 +6,16 @@ sap.ui.define([
     "sap/ui/model/Sorter",
     "sap/m/MessageBox",
     "sap/m/MessageToast",
+    "sap/ui/core/Core",
     "../Constants",
-], function (Controller, JSONModel, Filter, FilterOperator, Sorter, MessageBox, MessageToast, Constants) {
+    "../util/Routing",
+    "../util/Utility",
+    "../util/Validation",
+    "../util/Form",
+], function (
+    Controller, JSONModel, Filter, FilterOperator, Sorter, MessageBox,
+    MessageToast, Core, Constants, Routing, Utility, Validation, Form
+) {
     "use strict";
 
     const FILTER_PATH = {
@@ -20,7 +28,7 @@ sap.ui.define([
         PRICE: "Price",
         RATING: "Rating",
         STORE_ID: "StoreId",
-    }
+    };
 
     const VIEW_ID = {
         PRODUCT_SEARCH_FIELD: "ProductSearchField",
@@ -31,7 +39,27 @@ sap.ui.define([
         FILTER_OK: "FilterOk",
         FILTER_STORAGE: "FilterStorage",
         FILTER_OUT_OF_STOCK: "FilterOutOfStock",
-    }
+        DIALOG: {
+            NAME_INPUT: "NameInput",
+            PRICE_INPUT: "PriceInput",
+            SPECS_INPUT: "SpecsInput",
+            RATING_INPUT: "RatingInput",
+            SUPPLIER_INFO_INPUT: "SupplierInfoInput",
+            MADE_IN_INPUT: "MadeInInput",
+            PRODUCTION_COMPANY_NAME_INPUT: "ProductionCompanyNameInput",
+            SUBMIT_BTN: "SubmitBtn",
+        },
+    };
+
+    const DIALOG_FIELDS = [
+        VIEW_ID.DIALOG.NAME_INPUT,
+        VIEW_ID.DIALOG.PRICE_INPUT,
+        VIEW_ID.DIALOG.SPECS_INPUT,
+        VIEW_ID.DIALOG.RATING_INPUT,
+        VIEW_ID.DIALOG.SUPPLIER_INFO_INPUT,
+        VIEW_ID.DIALOG.MADE_IN_INPUT,
+        VIEW_ID.DIALOG.PRODUCTION_COMPANY_NAME_INPUT
+    ];
 
     const MESSAGES = {
         TITLE_CONFIRMATION: "Confirmation",
@@ -44,7 +72,20 @@ sap.ui.define([
         DELETE_STORE_SUCCESS_MESSAGE: "Store deleted successfully.",
         DELETE_STORE_FAILURE_MESSAGE: "Error while deleting store.",
 
-    }
+        CREATE_PRODUCT_SUCCESS_MESSAGE: "Product created successfully.",
+        CREATE_PRODUCT_FAILURE_MESSAGE: "Error while creating product.",
+
+        UPDATE_PRODUCT_SUCCESS_MESSAGE: "Product updated successfully.",
+        UPDATE_PRODUCT_FAILURE_MESSAGE: "Error while updating product.",
+    };
+
+    const FORM = {
+        CREATE_PRODUCT_TITLE_TEXT: "Create product",
+        UPDATE_PRODUCT_TITLE_TEXT: "Update product",
+
+        CREATE_SUBMIT_BTN_TEXT: "Create",
+        UPDATE_SUBMIT_BTN_TEXT: "Update",
+    };
 
     return Controller.extend("yauheni.sapryn.controller.StoreDetails", {
 
@@ -52,10 +93,6 @@ sap.ui.define([
             this.getView().addEventDelegate({onBeforeHide: this._onBeforeHide}, this)
 
             const oRouter = this.getOwnerComponent().getRouter();
-            const oCurrentRoute = oRouter.getHashChanger().getHash();
-            const oParameters = oRouter.getRouteInfoByHash(oCurrentRoute);
-
-            this.getOwnerComponent().getModel(Constants.SELECTED_IDS_MODEL).setProperty("/StoreID", oParameters.arguments.StoreID);
 
             this.oSortModel = new JSONModel({
                 Name: Constants.SORT_NONE,
@@ -67,59 +104,36 @@ sap.ui.define([
                 Rating: Constants.SORT_NONE,
             });
 
+            this.appViewModel = new JSONModel({
+                isUpdate: false,
+            });
+
+            this.getView().setModel(this.appViewModel, "appView");
+
             oRouter.getRoute(Constants.STORE_DETAILS_ROUTE).attachPatternMatched(this.onPatternMatched, this);
         },
 
         onPatternMatched: function (oEvent) {
-            const mRouteArguments = oEvent.getParameter("arguments");
-            const sStoreID = mRouteArguments.StoreID;
             const oODataModel = this.getView().getModel(Constants.ODATA_MODEL);
             oODataModel.metadataLoaded().then(() => {
-
-                const sPath = oODataModel.createKey(`/${Constants.STORES_URL_PATH}`, {id: sStoreID});
-                this.getView().bindObject({
-                    path: sPath,
-                    model: Constants.ODATA_MODEL
-                });
-
-                const sSearchValue = this.byId(VIEW_ID.PRODUCT_SEARCH_FIELD).getValue();
-
-                this._updateAllFilters(oODataModel, sStoreID, sSearchValue);
+                this._onMetadataLoaded(oEvent, oODataModel);
             });
-        },
-
-        _onBeforeHide: function (oEvent) {
-            this._clearSearch();
-            this._clearAllSorting();
-            this._clearFilters();
         },
 
         onLinkWithoutParamPress: function (oEvent) {
-            const oRouter = this.getOwnerComponent().getRouter();
-            oRouter.navTo(oEvent.getSource().getProperty("target"));
+            Routing.onLinkWithoutParamPress.call(this, oEvent.getSource().getProperty("target"));
         },
 
-        onLinkStoreDetailsPress: function (oEvent) {
-            const oRouter = this.getOwnerComponent().getRouter();
-            const sStoreId = this.getView().getModel(Constants.SELECTED_IDS_MODEL).getProperty("/StoreID");
-            oRouter.navTo(oEvent.getSource().getProperty("target"), {
-                StoreID: sStoreId
-            });
-        },
 
         onTableItemPress: function (oEvent) {
             const oSource = oEvent.getSource();
 
             const oCtx = oSource.getBindingContext(Constants.ODATA_MODEL);
 
-            const oComponent = this.getOwnerComponent();
-
             const productId = oCtx.getObject("id");
 
-            const storeId = this.getView().getModel(Constants.SELECTED_IDS_MODEL).getProperty("/StoreID");
-
-            oComponent.getRouter().navTo(Constants.PRODUCT_DETAILS_ROUTE, {
-                StoreID: storeId,
+            Routing.onLinkWithParamsPress.call(this, Constants.PRODUCT_DETAILS_ROUTE, {
+                StoreID: this.getView().getBindingContext(Constants.ODATA_MODEL).getProperty("id"),
                 ProductID: productId,
             });
         },
@@ -164,7 +178,7 @@ sap.ui.define([
             if (sSortType === Constants.SORT_ASC || sSortType === Constants.SORT_DESC) {
                 const bSortDesc = sSortType === Constants.SORT_DESC;
                 const oSorter = new Sorter(sSortBy, bSortDesc);
-                oSorter.fnCompare = this._compareFunction;
+                oSorter.fnCompare = Utility.compareFunction;
                 oItemsBinding.sort(oSorter);
             }
         },
@@ -190,12 +204,37 @@ sap.ui.define([
         onCreateProductButtonPress: function (oEvent) {
             const oView = this.getView();
             const oODataModel = oView.getModel(Constants.ODATA_MODEL);
+
             if (!this.oDialog) {
                 this.oDialog = sap.ui.xmlfragment(oView.getId(), "yauheni.sapryn.view.fragments.ProductDialog", this);
                 oView.addDependent(this.oDialog);
             }
 
-            const oEntryCtx = oODataModel.createEntry(`/${Constants.PRODUCTS_URL_PATH}`);
+            this.oDialog.attachAfterClose(() => {
+                this.oDialog.destroy();
+                this.oDialog = null;
+            });
+
+            const oEntryCtx = oODataModel.createEntry(`/${Constants.PRODUCTS_URL_PATH}`, {
+                properties: {
+                    StoreId: this.getView().getBindingContext(Constants.ODATA_MODEL).getProperty("id"),
+                    Status: "OK"
+                },
+                success: function () {
+                    MessageToast.show(MESSAGES.CREATE_PRODUCT_SUCCESS_MESSAGE);
+                },
+                error: function () {
+                    MessageToast.show(MESSAGES.CREATE_PRODUCT_FAILURE_MESSAGE);
+                }
+            });
+
+            this._configureDialogsFields(
+                FORM.CREATE_PRODUCT_TITLE_TEXT,
+                DIALOG_FIELDS,
+                VIEW_ID.DIALOG.SUBMIT_BTN,
+                FORM.CREATE_SUBMIT_BTN_TEXT,
+                (oEvent) => this._onDialogCreateBtn(oEvent)
+            );
 
             this.oDialog.setBindingContext(oEntryCtx);
 
@@ -203,6 +242,50 @@ sap.ui.define([
 
             this.oDialog.open();
 
+        },
+
+        onUpdateProductButtonPress: function (oEvent) {
+            const oCtx = oEvent.getSource().getBindingContext("odata");
+            const oODataModel = oCtx.getModel();
+
+
+            if (!this.oDialog) {
+                this.oDialog = sap.ui.xmlfragment(this.getView().getId(), "yauheni.sapryn.view.fragments.ProductDialog", this);
+                this.getView().addDependent(this.oDialog);
+            }
+
+            this.oDialog.attachAfterClose(() => {
+                this.oDialog.destroy();
+                this.oDialog = null;
+            });
+
+
+            this._configureDialogsFields(FORM.UPDATE_PRODUCT_TITLE_TEXT,
+                DIALOG_FIELDS,
+                VIEW_ID.DIALOG.SUBMIT_BTN,
+                FORM.UPDATE_SUBMIT_BTN_TEXT,
+                (oEvent) => this._onDialogUpdateBtn(oEvent)
+            );
+
+            this.appViewModel.setProperty("/isUpdate", true);
+
+            this.oDialog.setModel(oODataModel);
+            this.oDialog.setBindingContext(oCtx);
+
+            this.oDialog.open();
+        },
+
+        onDialogCancelBtn: function () {
+            const oODataModel = this.getView().getModel(Constants.ODATA_MODEL);
+            if (!this.appViewModel.getProperty("/isUpdate")) {
+                const oCtx = this.oDialog.getBindingContext();
+                oODataModel.deleteCreatedEntry(oCtx);
+            } else {
+                this.appViewModel.setProperty("/isUpdate", false);
+            }
+
+            Form.resetFieldsError();
+            this.oDialog.close();
         },
 
         onDeleteStoreButtonPress: function (oEvent) {
@@ -213,14 +296,71 @@ sap.ui.define([
             );
         },
 
-        _updateAllFilters: function (oODataModel, sStoreID, sSearchValue) {
+        onLiveChange: function (oEvent) {
+            const oControl = oEvent.getSource();
+            Validation.validateInput(oControl);
+        },
+
+        _onDialogCreateBtn: function () {
+            if (!Validation.isValidForm.call(this, DIALOG_FIELDS)){
+                MessageToast.show(MESSAGES.CREATE_PRODUCT_FAILURE_MESSAGE);
+                return;
+            }
+            const oODataModel = this.getView().getModel(Constants.ODATA_MODEL);
+            oODataModel.submitChanges();
+
+            this._updateAllFiltersCount(
+                oODataModel,
+                this.getView().getBindingContext(Constants.ODATA_MODEL).getProperty("id"),
+                this.byId(VIEW_ID.PRODUCT_SEARCH_FIELD).getValue()
+            );
+
+            this.byId(VIEW_ID.PRODUCTS_TABLE).getBinding("items").refresh();
+
+            this.oDialog.close();
+        },
+
+        _onDialogUpdateBtn: function (oEvent) {
+            if (!Validation.isValidForm.call(this, DIALOG_FIELDS)){
+                MessageToast.show(MESSAGES.UPDATE_PRODUCT_FAILURE_MESSAGE);
+                return;
+            }
+            const oCtx = oEvent.getSource().getBindingContext();
+
+            const oODataModel = oCtx.getModel();
+
+            const sKey = oODataModel.createKey("/Products", oCtx.getObject());
+
+            oODataModel.update(sKey, oCtx.getObject(), {
+                success: function () {
+                    MessageToast.show(MESSAGES.UPDATE_PRODUCT_SUCCESS_MESSAGE);
+                },
+                error: function () {
+                    MessageToast.show(MESSAGES.UPDATE_PRODUCT_FAILURE_MESSAGE);
+                }
+            });
+
+            this.appViewModel.setProperty("/isUpdate", false);
+
+            this._updateAllFiltersCount(
+                oODataModel,
+                this.getView().getBindingContext(Constants.ODATA_MODEL).getProperty("id"),
+                this.byId(VIEW_ID.PRODUCT_SEARCH_FIELD).getValue()
+            );
+
+            this.byId(VIEW_ID.PRODUCTS_TABLE).getBinding("items").refresh();
+
+            this.oDialog.close();
+        },
+
+        _updateAllFiltersCount: function (oODataModel, sStoreID, sSearchValue) {
             this._getProductsFilterCount(sStoreID, Constants.STATUS_TYPE_ALL, oODataModel, sSearchValue, (length) => {
                 this.byId(VIEW_ID.FILTER_ALL).setCount(length);
             });
 
             this._getProductsFilterCount(sStoreID, Constants.STATUS_TYPE_OK, oODataModel, sSearchValue, (length) => {
                 this.byId(VIEW_ID.FILTER_OK).setCount(length);
-            })
+            });
 
             this._getProductsFilterCount(sStoreID, Constants.STATUS_TYPE_STORAGE, oODataModel, sSearchValue, (length) => {
                 this.byId(VIEW_ID.FILTER_STORAGE).setCount(length);
@@ -228,7 +368,13 @@ sap.ui.define([
 
             this._getProductsFilterCount(sStoreID, Constants.STATUS_TYPE_OUT_OF_STOCK, oODataModel, sSearchValue, (length) => {
                 this.byId(VIEW_ID.FILTER_OUT_OF_STOCK).setCount(length);
-            })
+            });
+        },
+
+        _onBeforeHide: function (oEvent) {
+            this._clearSearch();
+            this._clearAllSorting();
+            this._clearFilters();
         },
 
         _showMessageBox: function (title, message, onConfirm) {
@@ -240,8 +386,8 @@ sap.ui.define([
                         if (oAction === MessageBox.Action.OK) {
                             onConfirm();
                         }
-                    }
-                }
+                    },
+                },
             );
         },
 
@@ -260,7 +406,7 @@ sap.ui.define([
                 },
                 error: function () {
                     MessageToast.show(MESSAGES.DELETE_STORE_FAILURE_MESSAGE);
-                }
+                },
             });
 
             oRouter.navTo(VIEW_ID.STORE_LIST);
@@ -279,7 +425,7 @@ sap.ui.define([
                 },
                 error: function () {
                     MessageToast.show(MESSAGES.DELETE_PRODUCT_FAILURE_MESSAGE);
-                }
+                },
             });
         },
 
@@ -294,7 +440,7 @@ sap.ui.define([
                             new Filter({
                                 path: FILTER_PATH.STATUS,
                                 operator: FilterOperator.EQ,
-                                value1: filterValue
+                                value1: filterValue,
                             }),
                         ],
                         and: true
@@ -302,7 +448,7 @@ sap.ui.define([
                     new Filter({
                         path: FILTER_PATH.STATUS,
                         operator: FilterOperator.EQ,
-                        value1: filterValue
+                        value1: filterValue,
                     });
             }
         },
@@ -313,27 +459,27 @@ sap.ui.define([
                     new Filter({
                         path: FILTER_PATH.NAME,
                         operator: FilterOperator.Contains,
-                        value1: sSearchValue
+                        value1: sSearchValue,
                     }),
                     new Filter({
                         path: FILTER_PATH.SPECS,
                         operator: FilterOperator.Contains,
-                        value1: sSearchValue
+                        value1: sSearchValue,
                     }),
                     new Filter({
                         path: FILTER_PATH.SUPPLIER_INFO,
                         operator: FilterOperator.Contains,
-                        value1: sSearchValue
+                        value1: sSearchValue,
                     }),
                     new Filter({
                         path: FILTER_PATH.MADE_IN,
                         operator: FilterOperator.Contains,
-                        value1: sSearchValue
+                        value1: sSearchValue,
                     }),
                     new Filter({
                         path: FILTER_PATH.PRODUCTION_COMPANY_NAME,
                         operator: FilterOperator.Contains,
-                        value1: sSearchValue
+                        value1: sSearchValue,
                     }),
                 ],
                 or: true,
@@ -346,13 +492,13 @@ sap.ui.define([
                         new Filter({
                             path: FILTER_PATH.PRICE,
                             operator: FilterOperator.EQ,
-                            value1: +sSearchValue
+                            value1: +sSearchValue,
                         }),
                         new Filter({
                             path: FILTER_PATH.RATING,
                             operator: FilterOperator.EQ,
-                            value1: +sSearchValue
-                        })
+                            value1: +sSearchValue,
+                        }),
                     ],
                     or: true,
                 })
@@ -362,14 +508,14 @@ sap.ui.define([
 
         _performProductSearch: function (sSearchValue) {
             const oTable = this.byId(VIEW_ID.PRODUCTS_TABLE);
-            const sStoreId = this.getView().getModel(Constants.SELECTED_IDS_MODEL).getProperty("/StoreID");
+            const sStoreId = this.getView().getBindingContext(Constants.ODATA_MODEL).getProperty("id");
             const oODataModel = this.getView().getModel(Constants.ODATA_MODEL);
 
             const filterType = this.byId(VIEW_ID.FILTER_BAR).getSelectedKey();
             const oFilter = this._createFilterStatusWithSearch(filterType, sSearchValue);
             oTable.getBinding("items").filter(oFilter);
 
-            this._updateAllFilters(oODataModel, sStoreId, sSearchValue);
+            this._updateAllFiltersCount(oODataModel, sStoreId, sSearchValue);
         },
 
         _getProductsFilterCount: function (storeId, filterType, oODataModel, sSearchValue, onSuccess) {
@@ -378,8 +524,8 @@ sap.ui.define([
                     new Filter({
                         path: FILTER_PATH.STORE_ID,
                         operator: FilterOperator.EQ,
-                        value1: storeId
-                    })
+                        value1: storeId,
+                    }),
                 ],
             });
 
@@ -393,7 +539,7 @@ sap.ui.define([
                             value1: filterType,
                         }),
                     ],
-                    and: true
+                    and: true,
                 });
             }
 
@@ -403,7 +549,7 @@ sap.ui.define([
                         oFilter,
                         this._createFiltersForSearch(sSearchValue),
                     ],
-                    and: true
+                    and: true,
                 });
             }
 
@@ -450,21 +596,29 @@ sap.ui.define([
             oFilterBar.setSelectedKey(VIEW_ID.FILTER_ALL);
         },
 
+        _configureDialogsFields: function (title, fields, submitBtnId, submitBtnText, onSubmit) {
+            Form.registerFields.call(this, fields);
 
-        _compareFunction: function (value1, value2) {
+            this.oDialog.setProperty("title", title);
+            this.byId(submitBtnId).setText(submitBtnText);
+            this.byId(submitBtnId).attachPress(onSubmit);
+        },
 
-            if (typeof value1 == "string" && typeof value2 == "string") {
-                return value1.localeCompare(value2);
-            }
+        _onMetadataLoaded: function (oEvent, oODataModel) {
+            const sStoreID = oEvent.getParameter("arguments").StoreID;
 
-            value2 = parseFloat(value2);
+            const sPath = oODataModel.createKey(`/${Constants.STORES_URL_PATH}`, {
+                id: oEvent.getParameter("arguments").StoreID,
+            });
 
-            value1 = parseFloat(value1);
+            this.getView().bindObject({
+                path: sPath,
+                model: Constants.ODATA_MODEL,
+            });
 
-            if (value1 < value2) return -1;
-            if (value1 === value2) return 0;
-            if (value1 > value2) return 1;
+            const sSearchValue = this.byId(VIEW_ID.PRODUCT_SEARCH_FIELD).getValue();
 
+            this._updateAllFiltersCount(oODataModel, sStoreID, sSearchValue);
         },
     });
 });

@@ -1,7 +1,6 @@
 <mvc:View
         xmlns="sap.m"
         xmlns:f="sap.f"
-        xmlns:layout="sap.ui.layout"
         xmlns:mvc="sap.ui.core.mvc"
         xmlns:app="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1"
         controllerName="yauheni.sapryn.controller.StoreDetails">
@@ -10,9 +9,8 @@
         <f:title>
             <f:DynamicPageTitle>
                 <f:breadcrumbs>
-                    <Breadcrumbs>
+                    <Breadcrumbs currentLocationText="Store details">
                         <Link text="Store list" target="StoreList" press="onLinkWithoutParamPress"/>
-                        <Link text="Store details" target="StoreDetails" press="onLinkStoreDetailsPress"/>
                     </Breadcrumbs>
                 </f:breadcrumbs>
                 <f:heading>
@@ -25,33 +23,36 @@
                 <HBox>
                     <VBox class="sapUiSmallMarginEnd">
                         <HBox alignItems="Center">
-                            <Label text="Email:" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"/>
-                            <Text text="{odata>Email}"/>
+                            <Label text="Email" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd" showColon="true" labelFor="EmailText"/>
+                            <Text text="{odata>Email}" id="EmailText"/>
                         </HBox>
                         <HBox alignItems="Center">
-                            <Label text="Phone Number:" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"/>
-                            <Text text="{odata>PhoneNumber}"/>
+                            <Label text="Phone Number" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd" showColon="true" labelFor="PhoneNumberText"/>
+                            <Text text="{odata>PhoneNumber}" id="PhoneNumberText"/>
                         </HBox>
                         <HBox alignItems="Center">
-                            <Label text="Address:" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"/>
-                            <Text text="{odata>Address}"/>
+                            <Label text="Address" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd" showColon="true" labelFor="AddressText"/>
+                            <Text text="{odata>Address}" id="AddressText"/>
                         </HBox>
                     </VBox>
 
                     <VBox>
                         <HBox alignItems="Center">
-                            <Label text="Established Date:" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"/>
-                            <Text text="{
-                        path: 'odata>Established',
-                        type: 'sap.ui.model.type.Date',
-                        formatOptions: {
-                            pattern: 'dd MMM yyyy'
-                        }
-                        }"/>
+                            <Label text="Established Date" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd" showColon="true" labelFor="EstablishedDateText"/>
+                            <Text
+                                 text="{
+                                    path: 'odata>Established',
+                                    type: 'sap.ui.model.type.Date',
+                                    formatOptions: {
+                                        pattern: 'dd MMM yyyy'
+                                    }
+                                 }"
+                                 id="EstablishedDateText"
+                            />
                         </HBox>
                         <HBox alignItems="Center">
-                            <Label text="Floor Area:" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"/>
-                            <Text text="{odata>FloorArea}"/>
+                            <Label text="Floor Area" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd" showColon="true" labelFor="FloorAreaText"/>
+                            <Text text="{odata>FloorArea}" id="FloorAreaText"/>
                         </HBox>
                     </VBox>
 
@@ -210,7 +211,7 @@
                                         <Text wrapping="false" text="{odata>ProductionCompanyName}"/>
                                         <RatingIndicator maxValue="5" editable="false" value="{odata>Rating}"/>
                                         <HBox justifyContent="End">
-                                            <Button icon="sap-icon://edit" type="Transparent"/>
+                                            <Button icon="sap-icon://edit" type="Transparent" press="onUpdateProductButtonPress"/>
                                             <Button icon="sap-icon://message-error" type="Transparent" press="onDeleteProductButtonPress"/>
                                         </HBox>
                                     </cells>

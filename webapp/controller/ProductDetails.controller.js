@@ -7,8 +7,14 @@ sap.ui.define([
     "sap/m/MessageToast",
     "sap/ui/model/ValidateException",
     "sap/ui/core/Core",
-    "../Constants"
-], function (Controller, JSONModel, DateFormat, Filter, FilterOperator, MessageToast, ValidationException, Core, Constants) {
+    "../Constants",
+    "../util/Routing",
+    "../util/Form",
+    "sap/ui/model/type/Currency"
+], function (
+    Controller, JSONModel, DateFormat, Filter, FilterOperator, MessageToast,
+    ValidationException, Core, Constants, Routing, Form, Currency
+) {
     "use strict";
 
     const VIEW_ID = {
@@ -29,61 +35,28 @@ sap.ui.define([
     return Controller.extend("yauheni.sapryn.controller.ProductDetails", {
 
         onInit: function () {
-            const oRouter = this.getOwnerComponent().getRouter();
-            const oCurrentRoute = oRouter.getHashChanger().getHash();
-            const oParameters = oRouter.getRouteInfoByHash(oCurrentRoute);
+            Form.registerFields.call(this, [VIEW_ID.AUTHOR_INPUT, VIEW_ID.RATING_INDICATOR]);
 
-            this.getOwnerComponent().getModel(Constants.SELECTED_IDS_MODEL).setProperty("/StoreID", oParameters.arguments.StoreID);
-            this.getOwnerComponent().getModel(Constants.SELECTED_IDS_MODEL).setProperty("/ProductID", oParameters.arguments.ProductID);
+            const oRouter = this.getOwnerComponent().getRouter();
+            oRouter.getRoute(Constants.PRODUCT_DETAILS_ROUTE).attachPatternMatched(this.onPatternMatched, this);
+        },
+
+        onPatternMatched: function (oEvent) {
+            const sProductID = oEvent.getParameter("arguments").ProductID;
 
             this.oAppViewModel = new JSONModel({
                 Author: "",
                 Rating: 0,
                 Comment: "",
-                ProductId: oParameters.arguments.ProductID,
+                ProductId: sProductID,
+                Currency: "USD",
             });
 
             this.getView().setModel(this.oAppViewModel, "appView");
 
-            const oMessageManager = Core.getMessageManager();
-
-            oMessageManager.registerObject(this.byId(VIEW_ID.AUTHOR_INPUT), true);
-            oMessageManager.registerObject(this.byId(VIEW_ID.RATING_INDICATOR), true);
-
-            oRouter.getRoute(Constants.PRODUCT_DETAILS_ROUTE).attachPatternMatched(this.onPatternMatched, this);
-        },
-
-        OnAfterRendering: function () {
-
-        },
-
-        onPatternMatched: function (oEvent) {
-            const mRouteArguments = oEvent.getParameter("arguments");
-
-            const sStoreID = mRouteArguments.StoreID;
-            const sProductID = mRouteArguments.ProductID;
-            this.getOwnerComponent().getModel(Constants.SELECTED_IDS_MODEL).setProperty("/StoreID", sStoreID);
-            this.getOwnerComponent().getModel(Constants.SELECTED_IDS_MODEL).setProperty("/ProductID", sProductID);
-
             const oODataModel = this.getView().getModel(Constants.ODATA_MODEL);
             oODataModel.metadataLoaded().then(() => {
-                const sProductPath = oODataModel.createKey(`/${Constants.PRODUCTS_URL_PATH}`, {id: sProductID});
-
-                this.getView().bindObject({
-                    path: sProductPath,
-                    model: Constants.ODATA_MODEL,
-                });
-
-                const oFilter = new Filter("ProductId", FilterOperator.EQ, sProductID);
-
-                const sCommentsPath = `/${Constants.PRODUCT_COMMENTS_URL_PATH}`;
-                this.byId(VIEW_ID.COMMENTS_LIST).bindObject({
-                    path: sCommentsPath,
-                    model: Constants.ODATA_MODEL,
-                });
-
-                this.byId(VIEW_ID.COMMENTS_LIST).getBinding("items").filter(oFilter);
-
+                this._onMetadataLoaded(sProductID, oODataModel);
             })
         },
 
@@ -148,24 +121,20 @@ sap.ui.define([
         },
 
         onLinkWithoutParamPress: function (oEvent) {
-            const oRouter = this.getOwnerComponent().getRouter();
-            oRouter.navTo(oEvent.getSource().getProperty("target"));
+            Routing.onLinkWithoutParamPress.call(this, oEvent.getSource().getProperty("target"));
         },
 
         onLinkStoreDetailsPress: function (oEvent) {
-            const oRouter = this.getOwnerComponent().getRouter();
-            const sStoreId = this.getView().getModel(Constants.SELECTED_IDS_MODEL).getProperty("/StoreID");
-            oRouter.navTo(Constants.STORE_DETAILS_ROUTE, {
-                StoreID: sStoreId
+            Routing.onLinkWithParamsPress.call(this, Constants.STORE_DETAILS_ROUTE, {
+                StoreID: this.getView().getBindingContext(Constants.ODATA_MODEL).getProperty("StoreId")
             });
         },
 
-        onLinkProductDetailsPress: function (oEvent) {
-            const oRouter = this.getOwnerComponent().getRouter();
-            const sProductId = this.getView().getModel(Constants.SELECTED_IDS_MODEL).getProperty("/ProductID");
-            oRouter.navTo(Constants.PRODUCT_DETAILS_ROUTE, {
-                ProductID: sProductId
-            });
+        formatCurrency: function (sPrice, sCurrency) {
+            debugger;
+            const oCurrencyType = new Currency();
+
+            return oCurrencyType.formatValue([sPrice, sCurrency], "string");
         },
 
         onAuthorChange: function (oEvent) {
@@ -200,6 +169,25 @@ sap.ui.define([
 
             this.byId(VIEW_ID.AUTHOR_INPUT).setValue("");
             this.byId(VIEW_ID.RATING_INDICATOR).setValue(0);
-        }
+        },
+
+        _onMetadataLoaded: function (sProductID, oODataModel) {
+            const sProductPath = oODataModel.createKey(`/${Constants.PRODUCTS_URL_PATH}`, {id: sProductID});
+
+            this.getView().bindObject({
+                path: sProductPath,
+                model: Constants.ODATA_MODEL,
+            });
+
+            const oFilter = new Filter("ProductId", FilterOperator.EQ, sProductID);
+
+            const sCommentsPath = `/${Constants.PRODUCT_COMMENTS_URL_PATH}`;
+            this.byId(VIEW_ID.COMMENTS_LIST).bindObject({
+                path: sCommentsPath,
+                model: Constants.ODATA_MODEL,
+            });
+
+            this.byId(VIEW_ID.COMMENTS_LIST).getBinding("items").filter(oFilter);
+        },
     });
 });

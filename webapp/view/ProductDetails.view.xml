@@ -1,22 +1,30 @@
 <mvc:View
         xmlns="sap.m"
         xmlns:f="sap.f"
-        xmlns:layout="sap.ui.layout"
         xmlns:mvc="sap.ui.core.mvc"
-        controllerName="yauheni.sapryn.controller.ProductDetails">
+        xmlns:core="sap.ui.core"
+        core:require="{formatMessage: 'sap/base/strings/formatMessage'}"
+        controllerName="yauheni.sapryn.controller.ProductDetails"
+>
 
     <f:DynamicPage>
         <f:title>
             <f:DynamicPageTitle>
                 <f:breadcrumbs>
-                    <Breadcrumbs>
+                    <Breadcrumbs currentLocationText="Product details">
                         <Link text="Store list" target="StoreList" press="onLinkWithoutParamPress"/>
                         <Link text="Store details" press="onLinkStoreDetailsPress"/>
-                        <Link text="Product details" target="ProductDetails" press="onLinkProductDetailsPress"/>
                     </Breadcrumbs>
                 </f:breadcrumbs>
                 <f:heading>
-                    <Title text="Product Details ({odata>Name})"/>
+                    <Title text="{
+                        parts: [
+                            'i18n>ProductDetails',
+                            'odata>Name'
+                        ],
+                        formatter: 'formatMessage'
+                    }"/>
+
                 </f:heading>
             </f:DynamicPageTitle>
         </f:title>
@@ -25,27 +33,34 @@
                 <HBox>
                     <VBox class="sapUiSmallMarginEnd">
                         <HBox alignItems="Center">
-                            <Label text="Price:" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"/>
-                            <Text text="{odata>Price} USD"/>
+                            <Label text="Price" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"
+                                   showColon="true" labelFor="PriceText"/>
+                            <Text
+                                text="{odata>Price} USD"
+                                id="PriceText"/>
                         </HBox>
                         <HBox alignItems="Center">
-                            <Label text="Rating:" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"/>
-                            <Text text="{odata>Rating}"/>
+                            <Label text="Rating" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"
+                                   showColon="true" labelFor="RatingText"/>
+                            <Text text="{odata>Rating}" id="RatingText"/>
                         </HBox>
                     </VBox>
                     <VBox class="sapUiSmallMarginEnd">
                         <HBox alignItems="Center">
-                            <Label text="Made in:" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"/>
-                            <Text text="{odata>MadeIn}"/>
+                            <Label text="Made in" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"
+                                   showColon="true" labelFor="MadeInText"/>
+                            <Text text="{odata>MadeIn}" id="MadeInText"/>
                         </HBox>
                     </VBox>
                     <VBox>
                         <HBox alignItems="Center">
-                            <Label text="Production company:" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"/>
-                            <Text text="{odata>ProductionCompanyName}"/>
+                            <Label text="Production company" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"
+                                   showColon="true" labelFor="ProductionCompanyNameText"/>
+                            <Text text="{odata>ProductionCompanyName}" id="ProductionCompanyNameText"/>
                         </HBox>
                         <HBox alignItems="Center">
-                            <Label text="Status:" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"/>
+                            <Label text="Status" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"
+                                   showColon="true" labelFor="ProductStatus"/>
                             <ObjectStatus
                                     text="{path: 'odata>Status', formatter: '.formatStatus'}"
                                     state="{path: 'odata>Status', formatter: '.formatState'}"
@@ -59,12 +74,14 @@
                 </HBox>
                 <VBox>
                     <HBox alignItems="Center">
-                        <Label text="Specs:" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"/>
-                        <Text text="{odata>Specs}"/>
+                        <Label text="Specs" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd" showColon="true"
+                               labelFor="SpecsText"/>
+                        <Text text="{odata>Specs}" id="SpecsText"/>
                     </HBox>
                     <HBox alignItems="Center">
-                        <Label text="Supplier info:" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"/>
-                        <Text text="{odata>SupplierInfo}"/>
+                        <Label text="Supplier info" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"
+                               showColon="true" labelFor="SupplierInfoText"/>
+                        <Text text="{odata>SupplierInfo}" id="SupplierInfoText"/>
                     </HBox>
                 </VBox>
             </f:DynamicPageHeader>
@@ -73,7 +90,7 @@
             <VBox>
                 <VBox>
                     <HBox alignItems="Center">
-                        <Label text="Author name:" class="sapUiSmallMarginEnd" required="true" labelFor="AuthorInput"/>
+                        <Label text="Author name" class="sapUiTinyMarginEnd" required="true" labelFor="AuthorInput"/>
                         <Input
                                 placeholder="Enter author name..."
                                 valueStateText="Author name is required!"
@@ -87,7 +104,7 @@
                                 id="AuthorInput"
                                 change="onAuthorChange"
                         />
-                        <Label text="Rating:" class="sapUiSmallMarginEnd" labelFor="RatingIndicator"/>
+                        <Label text="Rating" class="sapUiTinyMarginEnd" labelFor="RatingIndicator"/>
                         <RatingIndicator
                                 editable="true"
                                 maxValue="5"

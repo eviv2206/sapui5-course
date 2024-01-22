@@ -98,7 +98,8 @@
                     "useBatch": false,
                     "defaultBindingMode": "TwoWay",
                     "defaultCountMode": "Inline",
-                    "defaultOperationMode": "Server"
+                    "defaultOperationMode": "Server",
+                    "disableHeadRequestForToken": true
                 }
             }
         }

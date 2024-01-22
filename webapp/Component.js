@@ -1,8 +1,7 @@
 sap.ui.define([
     "sap/ui/core/UIComponent",
-    "sap/ui/model/odata/v2/ODataModel",
-    "sap/ui/model/json/JSONModel"
-], function (UIComponent, ODataModel, JSONModel) {
+    "sap/ui/model/resource/ResourceModel"
+], function (UIComponent, ResourceModel) {
     "use strict";
 
     return UIComponent.extend("yauheni.sapryn.Component", {
@@ -11,18 +10,13 @@ sap.ui.define([
         },
 
         init : function () {
-            // call the init function of the parent
             UIComponent.prototype.init.apply(this, arguments);
-
-            const oModel = new JSONModel();
-            oModel.setData({
-                StoreID: "",
-                ProductId: "",
-            });
-
-            this.setModel(oModel, "selectedIds");
-
             this.getRouter().initialize();
+
+            const i18nModel = new ResourceModel({
+                bundleName: "yauheni.sapryn.i18n.i18n"
+            });
+            this.setModel(i18nModel, "i18n");
         }
     });
 });

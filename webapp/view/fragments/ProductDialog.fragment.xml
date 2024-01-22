@@ -14,50 +14,146 @@
                 columnsL="1"
                 columnsM="1">
             <f:content>
-                <Label text="Name" required="true"/>
-                <Input value="{Name}"/>
+                <Label text="Name" required="true" labelFor="NameInput"/>
+                <Input
+                        placeholder="Enter name"
+                        value="{
+                            path: 'Name',
+                            type: 'sap.ui.model.type.String',
+                            constraints: {
+                                minLength: 1
+                            }
+                        }"
+                        valueStateText="Name is required"
+                        required="true"
+                        id="NameInput"
+                        liveChange="onLiveChange"
+                />
 
-                <Label text="Price" required="true"/>
-                <FlexBox alignItems="Center">
-                    <Input value="{Price}" fieldWidth="100vw">
+                <Label text="Price" required="true" labelFor="PriceInput"/>
+                <HBox alignItems="Center">
+                    <Input
+                            placeholder="Enter price"
+                            value="{
+                                path: 'Price',
+                                type: 'sap.ui.model.type.Integer',
+                                constraints: {
+                                    minimum: 1
+                                }
+                            }"
+                            valueStateText="Price is required and must be greater than 0"
+                            type="Number"
+                            required="true"
+                            id="PriceInput"
+                            change="onLiveChange"
+                    >
                         <layoutData>
                             <FlexItemData growFactor="1" />
                         </layoutData>
                     </Input>
                     <Text text="USD"/>
-                </FlexBox>
+                </HBox>
 
-                <Label text="Specs" required="true"/>
-                <TextArea value="{Specs}"/>
+                <Label text="Specs" required="true" labelFor="SpecsInput"/>
+                <TextArea
+                        placeholder="Enter specs"
+                        value="{
+                            path: 'Specs',
+                            type: 'sap.ui.model.type.String',
+                            constraints: {
+                                minLength: 1
+                            }
+                        }"
+                        valueStateText="Specs are required"
+                        required="true"
+                        id="SpecsInput"
+                        liveChange="onLiveChange"
+                />
 
-                <Label text="Rating" required="true"/>
-                <Input value="{Rating}"/>
+                <Label text="Rating" required="true" labelFor="RatingInput"/>
+                <Input
+                        placeholder="Enter rating"
+                        value="{
+                            path: 'Rating',
+                            type: 'sap.ui.model.type.Integer',
+                            constraints: {
+                                minimum: 1,
+                                maximum: 5
+                            }
+                        }"
+                        valueStateText="Rating is required and must be between 1 and 5"
+                        type="Number"
+                        required="true"
+                        id="RatingInput"
+                        change="onLiveChange"
+                />
 
-                <Label text="Supplier info" required="true"/>
-                <TextArea value="{SupplierInfo}"/>
+                <Label text="Supplier info" required="true" labelFor="SupplierInfoInput"/>
+                <TextArea
+                        placeholder="Enter supplier info"
+                        value="{
+                            path: 'SupplierInfo',
+                            type: 'sap.ui.model.type.String',
+                            constraints: {
+                                minLength: 1
+                            }
+                        }"
+                        valueStateText="Supplier info is required"
+                        required="true"
+                        id="SupplierInfoInput"
+                        liveChange="onLiveChange"
+                />
 
-                <Label text="Made in" required="true"/>
-                <Input value="{MadeIn}"/>
+                <Label text="Made in" required="true" labelFor="MadeInInput"/>
+                <Input
+                        placeholder="Enter made in"
+                        value="{
+                            path: 'MadeIn',
+                            type: 'sap.ui.model.type.String',
+                            constraints: {
+                                minLength: 1
+                            }
+                        }"
+                        valueStateText="Made in is required"
+                        required="true"
+                        id="MadeInInput"
+                        liveChange="onLiveChange"
+                />
 
-                <Label text="Production company name" required="true"/>
-                <Input value="{ProductionCompanyName}"/>
+                <Label text="Production company name" required="true" labelFor="ProductionCompanyNameInput"/>
+                <Input
+                        placeholder="Enter production company name"
+                        value="{
+                            path: 'ProductionCompanyName',
+                            type: 'sap.ui.model.type.String',
+                            constraints: {
+                                minLength: 1
+                            }
+                        }"
+                        valueStateText="Production company name is required"
+                        required="true"
+                        id="ProductionCompanyNameInput"
+                        liveChange="onLiveChange"
+                />
 
-                <Label text="Status" required="true"/>
+                <Label text="Status" required="true" labelFor="StatusSelect"/>
                 <Select
                     selectedKey="{Status}"
+                    required="true"
+                    id="StatusSelect"
                 >
                     <items>
-                        <core:ListItem text="Ok"/>
-                        <core:ListItem text="Storage"/>
-                        <core:ListItem text="Out of stock"/>
+                        <core:ListItem key="OK" text="Ok"/>
+                        <core:ListItem key="STORAGE" text="Storage"/>
+                        <core:ListItem key="OUT_OF_STOCK" text="Out of stock"/>
                     </items>
                 </Select>
             </f:content>
         </f:SimpleForm>
 
         <buttons>
-            <Button text="Create" />
-            <Button text="Close" />
+            <Button id="SubmitBtn" />
+            <Button text="Cancel" press="onDialogCancelBtn"/>
         </buttons>
     </Dialog>
 </core:FragmentDefinition>

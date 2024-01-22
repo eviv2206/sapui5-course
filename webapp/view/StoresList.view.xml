@@ -8,9 +8,7 @@
         <f:title>
             <f:DynamicPageTitle>
                 <f:breadcrumbs>
-                    <Breadcrumbs>
-                        <Link text="Store list" target="StoreList" press="onLinkWithoutParamPress"/>
-                    </Breadcrumbs>
+                    <Breadcrumbs currentLocationText="Store list"/>
                 </f:breadcrumbs>
                 <f:heading>
                     <Title text="Store list"/>
@@ -19,32 +17,27 @@
         </f:title>
         <f:header>
             <f:DynamicPageHeader pinnable="true">
-                <SearchField placeholder="Search..." showRefreshButton="true" search="onSearch" />
+                <SearchField placeholder="Search..." showRefreshButton="true" search="onSearch"/>
             </f:DynamicPageHeader>
         </f:header>
         <f:content>
             <List items="{odata>/Stores}" id="StoresList">
-                <CustomListItem type="Active" press="onListItemPress">
-                    <VBox>
-                        <HBox justifyContent="SpaceBetween" class="sapUiSmallMarginBeginEnd sapUiTinyMarginBottom sapUiSmallMarginTop">
-                            <Title text="{odata>Name}"/>
-                            <FlexBox direction="Column" alignItems="End">
-                                <Text text="{odata>FloorArea}"/>
-                                <Text text="sq.m"/>
-                            </FlexBox>
-                        </HBox>
-                        <HBox justifyContent="Start" class="sapUiSmallMarginBeginEnd sapUiTinyMarginBottom sapUiSmallMarginBottom">
-                            <Text text="{odata>Address}"/>
-                        </HBox>
-                    </VBox>
-                </CustomListItem>
+                <ObjectListItem
+                        type="Active"
+                        title="{odata>Name}"
+                        number="{odata>FloorArea}"
+                        numberUnit="sq.m"
+                        press="onListItemPress"
+                >
+                    <ObjectAttribute text="{odata>Address}"/>
+                </ObjectListItem>
             </List>
         </f:content>
         <f:footer>
             <OverflowToolbar>
-                <HBox justifyContent="End" width="100%">
-                    <Button type="Ghost" text="Create" icon="sap-icon://add" class="sapUiTinyMarginEnd"/>
-                </HBox>
+                <ToolbarSpacer/>
+                <Button type="Ghost" text="Create" icon="sap-icon://add" class="sapUiTinyMarginEnd"
+                        press="onCreateBtnPress"/>
             </OverflowToolbar>
         </f:footer>
     </f:DynamicPage>
