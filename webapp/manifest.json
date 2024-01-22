@@ -92,7 +92,7 @@
             }
         },
         "models": {
-            "odata": {
+            "": {
                 "dataSource": "mainService",
                 "settings": {
                     "useBatch": false,

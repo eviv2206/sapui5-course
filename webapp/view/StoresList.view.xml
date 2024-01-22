@@ -21,15 +21,15 @@
             </f:DynamicPageHeader>
         </f:header>
         <f:content>
-            <List items="{odata>/Stores}" id="StoresList">
+            <List items="{/Stores}" id="StoresList">
                 <ObjectListItem
                         type="Active"
-                        title="{odata>Name}"
-                        number="{odata>FloorArea}"
+                        title="{Name}"
+                        number="{FloorArea}"
                         numberUnit="sq.m"
                         press="onListItemPress"
                 >
-                    <ObjectAttribute text="{odata>Address}"/>
+                    <ObjectAttribute text="{Address}"/>
                 </ObjectListItem>
             </List>
         </f:content>

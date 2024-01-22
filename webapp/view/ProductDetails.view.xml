@@ -20,7 +20,7 @@
                     <Title text="{
                         parts: [
                             'i18n>ProductDetails',
-                            'odata>Name'
+                            'Name'
                         ],
                         formatter: 'formatMessage'
                     }"/>
@@ -36,34 +36,34 @@
                             <Label text="Price" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"
                                    showColon="true" labelFor="PriceText"/>
                             <Text
-                                text="{odata>Price} USD"
+                                text="{Price} USD"
                                 id="PriceText"/>
                         </HBox>
                         <HBox alignItems="Center">
                             <Label text="Rating" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"
                                    showColon="true" labelFor="RatingText"/>
-                            <Text text="{odata>Rating}" id="RatingText"/>
+                            <Text text="{Rating}" id="RatingText"/>
                         </HBox>
                     </VBox>
                     <VBox class="sapUiSmallMarginEnd">
                         <HBox alignItems="Center">
                             <Label text="Made in" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"
                                    showColon="true" labelFor="MadeInText"/>
-                            <Text text="{odata>MadeIn}" id="MadeInText"/>
+                            <Text text="{MadeIn}" id="MadeInText"/>
                         </HBox>
                     </VBox>
                     <VBox>
                         <HBox alignItems="Center">
                             <Label text="Production company" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"
                                    showColon="true" labelFor="ProductionCompanyNameText"/>
-                            <Text text="{odata>ProductionCompanyName}" id="ProductionCompanyNameText"/>
+                            <Text text="{ProductionCompanyName}" id="ProductionCompanyNameText"/>
                         </HBox>
                         <HBox alignItems="Center">
                             <Label text="Status" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"
                                    showColon="true" labelFor="ProductStatus"/>
                             <ObjectStatus
-                                    text="{path: 'odata>Status', formatter: '.formatStatus'}"
-                                    state="{path: 'odata>Status', formatter: '.formatState'}"
+                                    text="{path: 'Status', formatter: '.formatStatus'}"
+                                    state="{path: 'Status', formatter: '.formatState'}"
                                     inverted="true"
                                     active="true"
                                     id="ProductStatus"
@@ -76,12 +76,12 @@
                     <HBox alignItems="Center">
                         <Label text="Specs" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd" showColon="true"
                                labelFor="SpecsText"/>
-                        <Text text="{odata>Specs}" id="SpecsText"/>
+                        <Text text="{Specs}" id="SpecsText"/>
                     </HBox>
                     <HBox alignItems="Center">
                         <Label text="Supplier info" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"
                                showColon="true" labelFor="SupplierInfoText"/>
-                        <Text text="{odata>SupplierInfo}" id="SupplierInfoText"/>
+                        <Text text="{SupplierInfo}" id="SupplierInfoText"/>
                     </HBox>
                 </VBox>
             </f:DynamicPageHeader>
@@ -131,19 +131,19 @@
                 <List
                         id="CommentsList"
                         showSeparators="Inner"
-                        items="{odata>/ProductComments}"
+                        items="{/ProductComments}"
                 >
                     <FeedListItem
-                            sender="{odata>Author}"
-                            info="{odata>Type}"
-                            timestamp="Rating: {odata>Rating} Posted: {
-                                path: 'odata>Posted',
+                            sender="{Author}"
+                            info="{Type}"
+                            timestamp="Rating: {Rating} Posted: {
+                                path: 'Posted',
                                 type: 'sap.ui.model.type.Date',
                                 formatOptions: {
                                     pattern: 'dd MMM yyyy'
                                 }
                             }"
-                            text="{odata>Message}"
+                            text="{Message}"
                             iconDensityAware="false"
                             convertLinksToAnchorTags="All"
                     />

@@ -245,7 +245,7 @@ sap.ui.define([
         },
 
         onUpdateProductButtonPress: function (oEvent) {
-            const oCtx = oEvent.getSource().getBindingContext("odata");
+            const oCtx = oEvent.getSource().getBindingContext(Constants.ODATA_MODEL);
             const oODataModel = oCtx.getModel();
 
 
@@ -284,7 +284,7 @@ sap.ui.define([
                 this.appViewModel.setProperty("/isUpdate", false);
             }
 
-            Form.resetFieldsError();
+            Form.resetFieldsError.call(this, DIALOG_FIELDS);
             this.oDialog.close();
         },
 

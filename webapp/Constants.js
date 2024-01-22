@@ -4,7 +4,7 @@ sap.ui.define([], function() {
     return {
         // Models constants
         SELECTED_IDS_MODEL: "selectedIds",
-        ODATA_MODEL: "odata",
+        ODATA_MODEL: undefined,
 
         // Routes constants
         PRODUCT_DETAILS_ROUTE: "ProductDetails",
