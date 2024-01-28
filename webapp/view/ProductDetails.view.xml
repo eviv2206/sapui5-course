@@ -11,9 +11,9 @@
         <f:title>
             <f:DynamicPageTitle>
                 <f:breadcrumbs>
-                    <Breadcrumbs currentLocationText="Product details">
-                        <Link text="Store list" target="StoreList" press="onLinkWithoutParamPress"/>
-                        <Link text="Store details" press="onLinkStoreDetailsPress"/>
+                    <Breadcrumbs currentLocationText="{i18n>ProductDetailsBreadcrumbs}">
+                        <Link text="{i18n>StoreListBreadcrumbs}" target="StoreList" press="onLinkWithoutParamPress"/>
+                        <Link text="{i18n>StoreDetailsBreadcrumbs}" press="onLinkStoreDetailsPress"/>
                     </Breadcrumbs>
                 </f:breadcrumbs>
                 <f:heading>
@@ -30,36 +30,41 @@
         </f:title>
         <f:header>
             <f:DynamicPageHeader pinnable="true">
-                <HBox>
+                <HBox wrap="Wrap">
                     <VBox class="sapUiSmallMarginEnd">
-                        <HBox alignItems="Center">
-                            <Label text="Price" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"
+                        <HBox alignItems="Center" wrap="Wrap">
+                            <Label text="{i18n>PriceText}" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"
                                    showColon="true" labelFor="PriceText"/>
                             <Text
-                                text="{Price} USD"
-                                id="PriceText"/>
+                                    text="{
+                                    parts: ['Price', 'appView>/Currency'],
+                                    type: 'sap.ui.model.type.Currency',
+                                    formatter: '.formatCurrency'
+                                }"
+                                    id="PriceText"/>
                         </HBox>
-                        <HBox alignItems="Center">
-                            <Label text="Rating" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"
+                        <HBox alignItems="Center" wrap="Wrap">
+                            <Label text="{i18n>RatingText}" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"
                                    showColon="true" labelFor="RatingText"/>
                             <Text text="{Rating}" id="RatingText"/>
                         </HBox>
                     </VBox>
                     <VBox class="sapUiSmallMarginEnd">
-                        <HBox alignItems="Center">
-                            <Label text="Made in" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"
+                        <HBox alignItems="Center" wrap="Wrap">
+                            <Label text="{i18n>MadeInText}" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"
                                    showColon="true" labelFor="MadeInText"/>
                             <Text text="{MadeIn}" id="MadeInText"/>
                         </HBox>
                     </VBox>
                     <VBox>
-                        <HBox alignItems="Center">
-                            <Label text="Production company" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"
-                                   showColon="true" labelFor="ProductionCompanyNameText"/>
+                        <HBox alignItems="Center" wrap="Wrap">
+                            <Label text="{i18n>ProductionCompanyNameText}" design="Bold" vAlign="Middle"
+                                   class="sapUiTinyMarginEnd"
+                                   showColon="true" labelFor="ProductionCompanyNameText" wrapping="true"/>
                             <Text text="{ProductionCompanyName}" id="ProductionCompanyNameText"/>
                         </HBox>
-                        <HBox alignItems="Center">
-                            <Label text="Status" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"
+                        <HBox alignItems="Center" wrap="Wrap">
+                            <Label text="{i18n>StatusText}" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"
                                    showColon="true" labelFor="ProductStatus"/>
                             <ObjectStatus
                                     text="{path: 'Status', formatter: '.formatStatus'}"
@@ -73,14 +78,15 @@
                     </VBox>
                 </HBox>
                 <VBox>
-                    <HBox alignItems="Center">
-                        <Label text="Specs" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd" showColon="true"
+                    <HBox alignItems="Center" wrap="Wrap">
+                        <Label text="{i18n>SpecsText}" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"
+                               showColon="true"
                                labelFor="SpecsText"/>
                         <Text text="{Specs}" id="SpecsText"/>
                     </HBox>
-                    <HBox alignItems="Center">
-                        <Label text="Supplier info" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"
-                               showColon="true" labelFor="SupplierInfoText"/>
+                    <HBox alignItems="Center" wrap="Wrap">
+                        <Label text="{i18n>SupplierInfoText}" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd"
+                               showColon="true" labelFor="SupplierInfoText" wrapping="true"/>
                         <Text text="{SupplierInfo}" id="SupplierInfoText"/>
                     </HBox>
                 </VBox>
@@ -89,32 +95,37 @@
         <f:content>
             <VBox>
                 <VBox>
-                    <HBox alignItems="Center">
-                        <Label text="Author name" class="sapUiTinyMarginEnd" required="true" labelFor="AuthorInput"/>
-                        <Input
-                                placeholder="Enter author name..."
-                                valueStateText="Author name is required!"
-                                value="{
+                    <HBox wrap="Wrap">
+                        <FlexBox wrap="Wrap" alignItems="Center">
+                            <Label text="{i18n>AuthorNameText}" class="sapUiTinyMarginEnd" required="true"
+                                   labelFor="AuthorInput" showColon="true"/>
+                            <Input
+                                    placeholder="{i18n>AuthorInputPlaceholder}"
+                                    valueStateText="{i18n>AuthorErrorText}"
+                                    value="{
                                     path : 'appView>/Author',
                                     type : 'sap.ui.model.type.String',
                                     constraints : {
                                         minLength: 1
                                     }
                                 }"
-                                id="AuthorInput"
-                                change="onAuthorChange"
-                        />
-                        <Label text="Rating" class="sapUiTinyMarginEnd" labelFor="RatingIndicator"/>
-                        <RatingIndicator
-                                editable="true"
-                                maxValue="5"
-                                required="true"
-                                value="{appView>/Rating}"
-                                id="RatingIndicator"
-                        />
+                                    id="AuthorInput"
+                                    change="onAuthorChange"
+                            />
+                        </FlexBox>
+                        <FlexBox alignItems="Center">
+                            <Label text="{i18n>RatingText}" class="sapUiTinyMarginEnd" labelFor="RatingIndicator" showColon="true"/>
+                            <RatingIndicator
+                                    editable="true"
+                                    maxValue="5"
+                                    required="true"
+                                    value="{appView>/Rating}"
+                                    id="RatingIndicator"
+                            />
+                        </FlexBox>
                     </HBox>
                     <FeedInput
-                            placeholder="Post something here"
+                            placeholder="{i18n>FeedInputPlaceholder}"
                             showIcon="true"
                             value="{
                                 path : 'appView>/Comment',
@@ -136,7 +147,7 @@
                     <FeedListItem
                             sender="{Author}"
                             info="{Type}"
-                            timestamp="Rating: {Rating} Posted: {
+                            timestamp="{i18n>RatingText}: {Rating} {i18n>PostedText}: {
                                 path: 'Posted',
                                 type: 'sap.ui.model.type.Date',
                                 formatOptions: {

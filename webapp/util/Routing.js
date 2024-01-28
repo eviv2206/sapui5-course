@@ -1,15 +1,30 @@
+/**
+ * Utility module for handling navigation links.
+ *
+ */
 sap.ui.define([], function () {
     "use strict";
 
     return {
-        onLinkWithoutParamPress: function (path) {
+        /**
+         * Navigates to a route without parameters.
+         *
+         * @param {string} sPath - The path of the route to navigate to.
+         */
+        onLinkWithoutParamPress: function (sPath) {
             const oRouter = this.getOwnerComponent().getRouter();
-            oRouter.navTo(path);
+            oRouter.navTo(sPath);
         },
 
-        onLinkWithParamsPress: function (path, params) {
+        /**
+         * Navigates to a route with parameters.
+         *
+         * @param {string} sPath - The path of the route to navigate to.
+         * @param {Object} oParams - The parameters to pass during navigation.
+         */
+        onLinkWithParamsPress: function (sPath, oParams) {
             const oRouter = this.getOwnerComponent().getRouter();
-            oRouter.navTo(path, params);
+            oRouter.navTo(sPath, oParams);
         },
     }
 })

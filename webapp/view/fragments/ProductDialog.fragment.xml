@@ -5,18 +5,18 @@
 >
     <Dialog>
         <f:SimpleForm
-                maxContainerCols="1"
                 layout="ResponsiveGridLayout"
-                labelSpanL="12"
-                labelSpanM="12"
+                labelSpanL="4"
+                labelSpanM="4"
                 emptySpanL="0"
                 emptySpanM="0"
                 columnsL="1"
-                columnsM="1">
+                columnsM="1"
+        >
             <f:content>
-                <Label text="Name" required="true" labelFor="NameInput"/>
+                <Label text="{i18n>NameText}" required="true" labelFor="NameInput"/>
                 <Input
-                        placeholder="Enter name"
+                        placeholder="{i18n>NameInputPlaceholder}"
                         value="{
                             path: 'Name',
                             type: 'sap.ui.model.type.String',
@@ -24,16 +24,16 @@
                                 minLength: 1
                             }
                         }"
-                        valueStateText="Name is required"
+                        valueStateText="{i18n>NameErrorText}"
                         required="true"
                         id="NameInput"
                         liveChange="onLiveChange"
                 />
 
-                <Label text="Price" required="true" labelFor="PriceInput"/>
+                <Label text="{i18n>PriceText}" required="true" labelFor="PriceInput"/>
                 <HBox alignItems="Center">
                     <Input
-                            placeholder="Enter price"
+                            placeholder="{i18n>PriceInputPlaceholder}"
                             value="{
                                 path: 'Price',
                                 type: 'sap.ui.model.type.Integer',
@@ -41,22 +41,22 @@
                                     minimum: 1
                                 }
                             }"
-                            valueStateText="Price is required and must be greater than 0"
+                            valueStateText="{i18n>PriceErrorText}"
                             type="Number"
                             required="true"
                             id="PriceInput"
                             change="onLiveChange"
                     >
                         <layoutData>
-                            <FlexItemData growFactor="1" />
+                            <FlexItemData growFactor="1"/>
                         </layoutData>
                     </Input>
                     <Text text="USD"/>
                 </HBox>
 
-                <Label text="Specs" required="true" labelFor="SpecsInput"/>
+                <Label text="{i18n>SpecsText}" required="true" labelFor="SpecsInput"/>
                 <TextArea
-                        placeholder="Enter specs"
+                        placeholder="{i18n>SpecsInputPlaceholder}"
                         value="{
                             path: 'Specs',
                             type: 'sap.ui.model.type.String',
@@ -64,15 +64,15 @@
                                 minLength: 1
                             }
                         }"
-                        valueStateText="Specs are required"
+                        valueStateText="{i18n>SpecsErrorText}"
                         required="true"
                         id="SpecsInput"
                         liveChange="onLiveChange"
                 />
 
-                <Label text="Rating" required="true" labelFor="RatingInput"/>
+                <Label text="{i18n>RatingText}" required="true" labelFor="RatingInput"/>
                 <Input
-                        placeholder="Enter rating"
+                        placeholder="{i18n>RatingInputPlaceholder}"
                         value="{
                             path: 'Rating',
                             type: 'sap.ui.model.type.Integer',
@@ -81,16 +81,16 @@
                                 maximum: 5
                             }
                         }"
-                        valueStateText="Rating is required and must be between 1 and 5"
+                        valueStateText="{i18n>RatingErrorText}"
                         type="Number"
                         required="true"
                         id="RatingInput"
                         change="onLiveChange"
                 />
 
-                <Label text="Supplier info" required="true" labelFor="SupplierInfoInput"/>
+                <Label text="{i18n>SupplierInfoText}" required="true" labelFor="SupplierInfoInput"/>
                 <TextArea
-                        placeholder="Enter supplier info"
+                        placeholder="{i18n>SupplierInfoInputPlaceholder}"
                         value="{
                             path: 'SupplierInfo',
                             type: 'sap.ui.model.type.String',
@@ -98,15 +98,15 @@
                                 minLength: 1
                             }
                         }"
-                        valueStateText="Supplier info is required"
+                        valueStateText="{i18n>SupplierInfoErrorText}"
                         required="true"
                         id="SupplierInfoInput"
                         liveChange="onLiveChange"
                 />
 
-                <Label text="Made in" required="true" labelFor="MadeInInput"/>
+                <Label text="{i18n>MadeInText}" required="true" labelFor="MadeInInput"/>
                 <Input
-                        placeholder="Enter made in"
+                        placeholder="{i18n>MadeInInputPlaceholder}"
                         value="{
                             path: 'MadeIn',
                             type: 'sap.ui.model.type.String',
@@ -114,15 +114,15 @@
                                 minLength: 1
                             }
                         }"
-                        valueStateText="Made in is required"
+                        valueStateText="{i18n>MadeInErrorText}"
                         required="true"
                         id="MadeInInput"
                         liveChange="onLiveChange"
                 />
 
-                <Label text="Production company name" required="true" labelFor="ProductionCompanyNameInput"/>
+                <Label text="{i18n>ProductionCompanyNameText}" required="true" labelFor="ProductionCompanyNameInput"/>
                 <Input
-                        placeholder="Enter production company name"
+                        placeholder="{i18n>ProductionCompanyNameInputPlaceholder}"
                         value="{
                             path: 'ProductionCompanyName',
                             type: 'sap.ui.model.type.String',
@@ -130,30 +130,30 @@
                                 minLength: 1
                             }
                         }"
-                        valueStateText="Production company name is required"
+                        valueStateText="{i18n>ProductionCompanyNameErrorText}"
                         required="true"
                         id="ProductionCompanyNameInput"
                         liveChange="onLiveChange"
                 />
 
-                <Label text="Status" required="true" labelFor="StatusSelect"/>
+                <Label text="{i18n>StatusText}" required="true" labelFor="StatusSelect"/>
                 <Select
-                    selectedKey="{Status}"
-                    required="true"
-                    id="StatusSelect"
+                        selectedKey="{Status}"
+                        required="true"
+                        id="StatusSelect"
                 >
                     <items>
-                        <core:ListItem key="OK" text="Ok"/>
-                        <core:ListItem key="STORAGE" text="Storage"/>
-                        <core:ListItem key="OUT_OF_STOCK" text="Out of stock"/>
+                        <core:ListItem key="OK" text="{i18n>FilterOk}"/>
+                        <core:ListItem key="STORAGE" text="{i18n>FilterStorage}"/>
+                        <core:ListItem key="OUT_OF_STOCK" text="{i18n>FilterOutOfStock}"/>
                     </items>
                 </Select>
             </f:content>
         </f:SimpleForm>
 
         <buttons>
-            <Button id="SubmitBtn" />
-            <Button text="Cancel" press="onDialogCancelBtn"/>
+            <Button id="SubmitBtn"/>
+            <Button text="{i18n>CancelBtnText}" press="onDialogCancelBtn"/>
         </buttons>
     </Dialog>
 </core:FragmentDefinition>

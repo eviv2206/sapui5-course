@@ -9,36 +9,36 @@
         <f:title>
             <f:DynamicPageTitle>
                 <f:breadcrumbs>
-                    <Breadcrumbs currentLocationText="Store details">
-                        <Link text="Store list" target="StoreList" press="onLinkWithoutParamPress"/>
+                    <Breadcrumbs currentLocationText="{i18n>StoreDetailsBreadcrumbs}">
+                        <Link text="{i18n>StoreListBreadcrumbs}" target="StoreList" press="onLinkWithoutParamPress"/>
                     </Breadcrumbs>
                 </f:breadcrumbs>
                 <f:heading>
-                    <Title text="Store details"/>
+                    <Title text="{i18n>StoreDetailsTitle}"/>
                 </f:heading>
             </f:DynamicPageTitle>
         </f:title>
         <f:header>
             <f:DynamicPageHeader pinnable="true">
-                <HBox>
+                <HBox wrap="Wrap">
                     <VBox class="sapUiSmallMarginEnd">
-                        <HBox alignItems="Center">
-                            <Label text="Email" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd" showColon="true" labelFor="EmailText"/>
+                        <HBox alignItems="Center" wrap="Wrap">
+                            <Label text="{i18n>EmailText}" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd" showColon="true" labelFor="EmailText"/>
                             <Text text="{Email}" id="EmailText"/>
                         </HBox>
-                        <HBox alignItems="Center">
-                            <Label text="Phone Number" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd" showColon="true" labelFor="PhoneNumberText"/>
+                        <HBox alignItems="Center" wrap="Wrap">
+                            <Label text="{i18n>PhoneNumberText}" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd" showColon="true" labelFor="PhoneNumberText"/>
                             <Text text="{PhoneNumber}" id="PhoneNumberText"/>
                         </HBox>
-                        <HBox alignItems="Center">
-                            <Label text="Address" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd" showColon="true" labelFor="AddressText"/>
+                        <HBox alignItems="Center" wrap="Wrap">
+                            <Label text="{i18n>AddressText}" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd" showColon="true" labelFor="AddressText"/>
                             <Text text="{Address}" id="AddressText"/>
                         </HBox>
                     </VBox>
 
                     <VBox>
-                        <HBox alignItems="Center">
-                            <Label text="Established Date" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd" showColon="true" labelFor="EstablishedDateText"/>
+                        <HBox alignItems="Center" wrap="Wrap">
+                            <Label text="{i18n>EstablishedDateText}" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd" showColon="true" labelFor="EstablishedDateText"/>
                             <Text
                                  text="{
                                     path: 'Established',
@@ -50,12 +50,11 @@
                                  id="EstablishedDateText"
                             />
                         </HBox>
-                        <HBox alignItems="Center">
-                            <Label text="Floor Area" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd" showColon="true" labelFor="FloorAreaText"/>
+                        <HBox alignItems="Center" wrap="Wrap">
+                            <Label text="{i18n>FloorAreaText}" design="Bold" vAlign="Middle" class="sapUiTinyMarginEnd" showColon="true" labelFor="FloorAreaText"/>
                             <Text text="{FloorArea}" id="FloorAreaText"/>
                         </HBox>
                     </VBox>
-
                 </HBox>
             </f:DynamicPageHeader>
         </f:header>
@@ -68,7 +67,7 @@
                     <items>
                         <IconTabFilter
                                 showAll="true"
-                                text="ALL"
+                                text="{i18n>FilterAll}"
                                 key="FilterAll"
                                 id="FilterAll"
                         />
@@ -76,21 +75,21 @@
                         <IconTabFilter
                                 icon="sap-icon://accept"
                                 iconColor="Positive"
-                                text="Ok"
+                                text="{i18n>FilterOk}"
                                 key="OK"
                                 id="FilterOk"
                         />
                         <IconTabFilter
                                 icon="sap-icon://alert"
                                 iconColor="Critical"
-                                text="Storage"
+                                text="{i18n>FilterStorage}"
                                 key="STORAGE"
                                 id="FilterStorage"
                         />
                         <IconTabFilter
                                 icon="sap-icon://high-priority"
                                 iconColor="Negative"
-                                text="Out of stock"
+                                text="{i18n>FilterOutOfStock}"
                                 key="OUT_OF_STOCK"
                                 id="FilterOutOfStock"
                         />
@@ -109,10 +108,10 @@
                         >
                             <headerToolbar>
                                 <OverflowToolbar style="Clear">
-                                    <Title id="title" text="Products"/>
+                                    <Title id="title" text="{i18n>ProductsTitle}"/>
                                     <ToolbarSpacer/>
                                     <SearchField
-                                            placeholder="Enter value to search"
+                                            placeholder="{i18n>ProductsSearchPlaceholder}"
                                             width="30%"
                                             search="onProductSearch"
                                             id="ProductSearchField"
@@ -120,84 +119,90 @@
                                 </OverflowToolbar>
                             </headerToolbar>
                             <columns>
-                                <Column width="15%">
+                                <Column demandPopin="true">
                                     <FlexBox alignItems="Center">
                                         <Button
-                                                icon="sap-icon://sort"
+                                                icon="{appView>/SortNameIcon}"
                                                 type="Transparent"
                                                 press="onSortButtonPress"
                                                 app:sortBy="Name"
                                         />
-                                        <Text text="Name"/>
+                                        <Text text="{i18n>NameText}"/>
                                     </FlexBox>
                                 </Column>
-                                <Column width="8%">
+                                <Column minScreenWidth="Tablet" demandPopin="true" hAlign="End">
                                     <FlexBox alignItems="Center">
                                         <Button
-                                                icon="sap-icon://sort"
+                                                icon="{appView>/SortPriceIcon}"
                                                 type="Transparent"
                                                 press="onSortButtonPress"
                                                 app:sortBy="Price"
+                                                visible="{appView>/isSortButtonVisibleTablet}"
                                         />
-                                        <Text text="Price"/>
+                                        <Text text="{i18n>PriceText}"/>
                                     </FlexBox>
                                 </Column>
-                                <Column width="12%">
+                                <Column minScreenWidth="Desktop" demandPopin="true">
                                     <FlexBox alignItems="Center">
                                         <Button
-                                                icon="sap-icon://sort"
+                                                icon="{appView>/SortSpecsIcon}"
                                                 type="Transparent"
                                                 press="onSortButtonPress"
                                                 app:sortBy="Specs"
+                                                visible="{appView>/isSortButtonVisibleDesktop}"
                                         />
-                                        <Text text="Specs"/>
+                                        <Text text="{i18n>SpecsText}"/>
                                     </FlexBox>
                                 </Column>
-                                <Column width="12%">
+                                <Column minScreenWidth="Desktop" demandPopin="true">
                                     <FlexBox alignItems="Center">
                                         <Button
-                                                icon="sap-icon://sort"
+                                                icon="{appView>/SortSupplierInfoIcon}"
                                                 type="Transparent"
                                                 press="onSortButtonPress"
                                                 app:sortBy="SupplierInfo"
+                                                visible="{appView>/isSortButtonVisibleDesktop}"
                                         />
-                                        <Text text="Supplier Info"/>
+                                        <Text text="{i18n>SupplierInfoText}"/>
                                     </FlexBox>
                                 </Column>
-                                <Column width="12%">
+                                <Column minScreenWidth="Tablet" demandPopin="true">
                                     <FlexBox alignItems="Center">
                                         <Button
-                                                icon="sap-icon://sort"
+                                                icon="{appView>/SortMadeInIcon}"
                                                 type="Transparent"
                                                 press="onSortButtonPress"
                                                 app:sortBy="MadeIn"
+                                                visible="{appView>/isSortButtonVisibleTablet}"
                                         />
-                                        <Text text="Country of origin"/>
+                                        <Text text="{i18n>CountryOfOriginText}"/>
                                     </FlexBox>
                                 </Column>
-                                <Column width="12%">
+                                <Column minScreenWidth="Tablet" demandPopin="true">
                                     <FlexBox alignItems="Center">
                                         <Button
-                                                icon="sap-icon://sort"
+                                                icon="{appView>/SortProductionCompanyNameIcon}"
                                                 type="Transparent"
                                                 press="onSortButtonPress"
                                                 app:sortBy="ProductionCompanyName"
+                                                visible="{appView>/isSortButtonVisibleTablet}"
                                         />
-                                        <Text text="Prod. company"/>
+                                        <Text text="{i18n>ProductionCompanyText}"/>
                                     </FlexBox>
                                 </Column>
-                                <Column width="12%">
+                                <Column width="104px" minScreenWidth="Desktop" demandPopin="true">
                                     <FlexBox alignItems="Center">
                                         <Button
-                                                icon="sap-icon://sort"
+                                                icon="{appView>/SortRatingIcon}"
                                                 type="Transparent"
                                                 press="onSortButtonPress"
                                                 app:sortBy="Rating"
+                                                visible="{appView>/isSortButtonVisibleDesktop}"
                                         />
-                                        <Text text="Rating"/>
+                                        <Text text="{i18n>RatingText}"/>
                                     </FlexBox>
                                 </Column>
-                                <Column>
+                                <Column demandPopin="false">
                                 </Column>
                             </columns>
                             <items>
@@ -225,8 +230,8 @@
         <f:footer>
             <OverflowToolbar>
                 <FlexBox justifyContent="End" width="100%">
-                    <Button type="Ghost" text="Create" icon="sap-icon://add" class="sapUiTinyMarginEnd" press="onCreateProductButtonPress"/>
-                    <Button type="Reject" text="Delete" icon="sap-icon://delete" class="sapUiTinyMarginEnd" press="onDeleteStoreButtonPress" />
+                    <Button type="Ghost" text="{i18n>CreateButtonText}" icon="sap-icon://add" class="sapUiTinyMarginEnd" press="onCreateProductButtonPress"/>
+                    <Button type="Reject" text="{i18n>DeleteButtonText}" icon="sap-icon://delete" class="sapUiTinyMarginEnd" press="onDeleteStoreButtonPress" />
                 </FlexBox>
             </OverflowToolbar>
         </f:footer>

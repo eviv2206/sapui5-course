@@ -3,19 +3,11 @@
         xmlns:f="sap.ui.layout.form"
         xmlns:core="sap.ui.core">
     <Dialog>
-        <f:SimpleForm
-                maxContainerCols="1"
-                layout="ResponsiveGridLayout"
-                labelSpanL="12"
-                labelSpanM="12"
-                emptySpanL="0"
-                emptySpanM="0"
-                columnsL="1"
-                columnsM="1">
+        <f:SimpleForm>
             <f:content>
-                <Label text="Name" required="true" labelFor="NameInput"/>
+                <Label text="{i18n>NameText}" required="true" labelFor="NameInput"/>
                 <Input
-                        placeholder="Enter name"
+                        placeholder="{i18n>NameInputPlaceholder}"
                         value="{
                             path: 'Name',
                             type: 'sap.ui.model.type.String',
@@ -23,20 +15,20 @@
                                 minLength: 1
                             }
                         }"
-                        valueStateText="Name is required"
+                        valueStateText="{i18n>NameErrorText}"
                         required="true"
                         id="NameInput"
                         liveChange="onLiveChange"
                 />
 
-                <Label text="Email" required="true" labelFor="EmailInput"/>
+                <Label text="{i18n>EmailText}" required="true" labelFor="EmailInput"/>
                 <Input
-                       placeholder="Enter email"
+                       placeholder="{i18n>EmailInputPlaceholder}"
                        value="{
                             path: 'Email',
                             type: 'yauheni.sapryn.type.EmailType'
                        }"
-                       valueStateText="Email is required"
+                       valueStateText="{i18n>EmailErrorText}"
                        type="Email"
                        required="true"
                        id="EmailInput"
@@ -44,9 +36,9 @@
                 />
 
 
-                <Label text="Phone number" required="true" labelFor="PhoneNumberInput"/>
+                <Label text="{i18n>PhoneNumberText}" required="true" labelFor="PhoneNumberInput"/>
                 <Input
-                        placeholder="Enter phone number"
+                        placeholder="{i18n>PhoneNumberInputPlaceholder}"
                         value="{
                             path: 'PhoneNumber',
                             type: 'sap.ui.model.type.String',
@@ -54,16 +46,16 @@
                                 minLength: 1
                             }
                         }"
-                        valueStateText="Phone number is required"
+                        valueStateText="{i18n>PhoneNumberErrorText}"
                         type="Tel"
                         required="true"
                         id="PhoneNumberInput"
                         liveChange="onLiveChange"
                 />
 
-                <Label text="Address" required="true" labelFor="AddressInput"/>
+                <Label text="{i18n>AddressText}" required="true" labelFor="AddressInput"/>
                 <Input
-                        placeholder="Enter address"
+                        placeholder="{i18n>AddressInputPlaceholder}"
                         value="{
                             path: 'Address',
                             type: 'sap.ui.model.type.String',
@@ -71,13 +63,13 @@
                                 minLength: 1
                             }
                         }"
-                        valueStateText="Address is required"
+                        valueStateText="{i18n>AddressErrorText}"
                         required="true"
                         id="AddressInput"
                         liveChange="onLiveChange"
                 />
 
-                <Label text="Established" required="true" labelFor="EstablishedInput"/>
+                <Label text="{i18n>EstablishedDateText}" required="true" labelFor="EstablishedInput"/>
                 <DatePicker
                         value="{
 							path: 'Established',
@@ -86,15 +78,15 @@
 								pattern: 'MMM-dd-yy'
 							}
 						}"
-                        valueStateText="Date should be earlier than today"
+                        valueStateText="{i18n>EstablishedErrorText}"
                         required="true"
                         id="EstablishedInput"
-                        liveChange="onLiveChange"
+                        change="onLiveChange"
                 />
 
-                <Label text="Floor Area" required="true" labelFor="FloorAreaInput"/>
+                <Label text="{i18n>FloorAreaText}" required="true" labelFor="FloorAreaInput"/>
                 <Input
-                        placeholder="Enter floor area"
+                        placeholder="{i18n>FloorAreaInputPlaceholder}"
                         value="{
                             path: 'FloorArea',
                             type: 'sap.ui.model.type.Integer',
@@ -102,7 +94,7 @@
                                 minimum: 1
                             }
                         }"
-                        valueStateText="Floor area is required and must be greater than 0"
+                        valueStateText="{i18n>FloorAreaErrorText}"
                         type="Number"
                         required="true"
                         id="FloorAreaInput"
@@ -112,8 +104,8 @@
         </f:SimpleForm>
 
         <buttons>
-            <Button text="Create" press="onDialogCreateBtn"/>
-            <Button text="Close" press="onDialogCancelBtn"/>
+            <Button text="{i18n>CreateBtnText}" press="onDialogCreateBtn"/>
+            <Button text="{i18n>CancelBtnText}" press="onDialogCancelBtn"/>
         </buttons>
     </Dialog>
 </core:FragmentDefinition>

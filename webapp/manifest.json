@@ -1,4 +1,5 @@
 {
+    "_version": "1.120.4",
     "sap.app": {
         "id": "yauheni.sapryn",
         "type": "application",
@@ -32,6 +33,7 @@
         "routing": {
             "config": {
                 "routerClass": "sap.m.routing.Router",
+                "type": "View",
                 "viewType": "XML",
                 "viewPath": "yauheni.sapryn.view",
                 "controlId": "RootApp",
@@ -83,7 +85,6 @@
             }
         },
         "dependencies": {
-            "minUI5Version": "1.117.5",
             "libs": {
                 "sap.m": {},
                 "sap.f": {},
@@ -100,6 +101,14 @@
                     "defaultCountMode": "Inline",
                     "defaultOperationMode": "Server",
                     "disableHeadRequestForToken": true
+                }
+            },
+            "i18n": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "settings": {
+                    "bundleUrl": "i18n/i18n.properties",
+                    "supportedLocales": ["en", "ru"],
+                    "fallbackLocale": "en"
                 }
             }
         }

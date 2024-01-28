@@ -2,22 +2,23 @@
         xmlns="sap.m"
         xmlns:f="sap.f"
         xmlns:mvc="sap.ui.core.mvc"
-        controllerName="yauheni.sapryn.controller.StoresList">
+        controllerName="yauheni.sapryn.controller.StoresList"
+>
 
     <f:DynamicPage class="sapUiNoContentPadding" showFooter="true">
         <f:title>
             <f:DynamicPageTitle>
                 <f:breadcrumbs>
-                    <Breadcrumbs currentLocationText="Store list"/>
+                    <Breadcrumbs currentLocationText="{i18n>StoreListBreadcrumbs}"/>
                 </f:breadcrumbs>
                 <f:heading>
-                    <Title text="Store list"/>
+                    <Title text="{i18n>StoreListTitle}"/>
                 </f:heading>
             </f:DynamicPageTitle>
         </f:title>
         <f:header>
             <f:DynamicPageHeader pinnable="true">
-                <SearchField placeholder="Search..." showRefreshButton="true" search="onSearch"/>
+                <SearchField placeholder="{i18n>SearchFieldPlaceholder}" showRefreshButton="true" search="onSearch"/>
             </f:DynamicPageHeader>
         </f:header>
         <f:content>
@@ -26,7 +27,7 @@
                         type="Active"
                         title="{Name}"
                         number="{FloorArea}"
-                        numberUnit="sq.m"
+                        numberUnit="{i18n>AreaUnit}"
                         press="onListItemPress"
                 >
                     <ObjectAttribute text="{Address}"/>
@@ -36,7 +37,7 @@
         <f:footer>
             <OverflowToolbar>
                 <ToolbarSpacer/>
-                <Button type="Ghost" text="Create" icon="sap-icon://add" class="sapUiTinyMarginEnd"
+                <Button type="Ghost" text="{i18n>CreateButtonText}" icon="sap-icon://add" class="sapUiTinyMarginEnd"
                         press="onCreateBtnPress"/>
             </OverflowToolbar>
         </f:footer>

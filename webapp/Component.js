@@ -1,7 +1,14 @@
+/**
+ * SAPUI5 Component for the application.
+ *
+ * @class
+ * @constructor
+ * @public
+ * @extends sap.ui.core.UIComponent
+ */
 sap.ui.define([
     "sap/ui/core/UIComponent",
-    "sap/ui/model/resource/ResourceModel"
-], function (UIComponent, ResourceModel) {
+], function (UIComponent) {
     "use strict";
 
     return UIComponent.extend("yauheni.sapryn.Component", {
@@ -9,14 +16,18 @@ sap.ui.define([
             manifest: "json"
         },
 
-        init : function () {
+        /**
+         * Initialization of the component.
+         *
+         * @override
+         * @public
+         */
+        init: function () {
+            // Call the base class init method
             UIComponent.prototype.init.apply(this, arguments);
-            this.getRouter().initialize();
 
-            const i18nModel = new ResourceModel({
-                bundleName: "yauheni.sapryn.i18n.i18n"
-            });
-            this.setModel(i18nModel, "i18n");
+            // Initialize the router
+            this.getRouter().initialize();
         }
     });
 });
