@@ -320,6 +320,7 @@ sap.ui.define([
                 this.appViewModel.setProperty("/isUpdate", false);
             }
 
+            oODataModel.resetChanges();
             this.oDialog.close();
             this.oDialog.destroy();
             this.oDialog = null;
