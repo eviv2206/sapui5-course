@@ -96,7 +96,7 @@
             <VBox>
                 <VBox>
                     <HBox wrap="Wrap">
-                        <FlexBox wrap="Wrap" alignItems="Center">
+                        <HBox wrap="Wrap" alignItems="Center">
                             <Label text="{i18n>AuthorNameText}" class="sapUiTinyMarginEnd" required="true"
                                    labelFor="AuthorInput" showColon="true"/>
                             <Input
@@ -112,8 +112,8 @@
                                     id="AuthorInput"
                                     change="onAuthorChange"
                             />
-                        </FlexBox>
-                        <FlexBox alignItems="Center">
+                        </HBox>
+                        <HBox alignItems="Center" class="sapUiTinyMarginBegin">
                             <Label text="{i18n>RatingText}" class="sapUiTinyMarginEnd" labelFor="RatingIndicator" showColon="true"/>
                             <RatingIndicator
                                     editable="true"
@@ -122,7 +122,7 @@
                                     value="{appView>/Rating}"
                                     id="RatingIndicator"
                             />
-                        </FlexBox>
+                        </HBox>
                     </HBox>
                     <FeedInput
                             placeholder="{i18n>FeedInputPlaceholder}"

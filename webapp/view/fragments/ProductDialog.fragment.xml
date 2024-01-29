@@ -51,7 +51,7 @@
                             <FlexItemData growFactor="1"/>
                         </layoutData>
                     </Input>
-                    <Text text="USD"/>
+                    <Text text="USD" class="sapUiTinyMarginBegin"/>
                 </HBox>
 
                 <Label text="{i18n>SpecsText}" required="true" labelFor="SpecsInput"/>
